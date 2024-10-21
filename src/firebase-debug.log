@@ -1,0 +1,27 @@
+[debug] [2024-10-21T23:01:34.537Z] ----------------------------------------------------------------------
+[debug] [2024-10-21T23:01:34.538Z] Command:       /Users/shun.nagahara/.nodebrew/node/v16.13.1/bin/node /Users/shun.nagahara/.nodebrew/current/bin/firebase projects:list
+[debug] [2024-10-21T23:01:34.538Z] CLI Version:   10.2.0
+[debug] [2024-10-21T23:01:34.538Z] Platform:      darwin
+[debug] [2024-10-21T23:01:34.538Z] Node Version:  v16.13.1
+[debug] [2024-10-21T23:01:34.539Z] Time:          Mon Oct 21 2024 16:01:34 GMT-0700 (アメリカ太平洋夏時間)
+[debug] [2024-10-21T23:01:34.540Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-10-21T23:01:34.543Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2024-10-21T23:01:34.560Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-10-21T23:01:34.560Z] > authorizing via signed-in user (shun.nagahara@aventulife.co.jp)
+[debug] [2024-10-21T23:01:34.564Z] > refreshing access token with scopes: []
+[debug] [2024-10-21T23:01:34.566Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2024-10-21T23:01:34.682Z] <<< HTTP RESPONSE 400 {"pragma":"no-cache","date":"Mon, 21 Oct 2024 23:01:34 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2024-10-21T23:01:34.686Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2024-10-21T23:01:34.805Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2024-10-21T23:01:34.809Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2024-10-21T23:01:35.056Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 401
+[debug] [2024-10-21T23:01:35.059Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2024-10-21T23:01:35.061Z] HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[debug] [2024-10-21T23:01:35.136Z] FirebaseError: HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+    at module.exports (/Users/shun.nagahara/.nodebrew/node/v16.13.1/lib/node_modules/firebase-tools/lib/responseToError.js:38:12)
+    at RetryOperation._fn (/Users/shun.nagahara/.nodebrew/node/v16.13.1/lib/node_modules/firebase-tools/lib/apiv2.js:283:39)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
