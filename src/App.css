@@ -1,0 +1,41 @@
+.roombox {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 200px;
+    background-color: #f1f1f1;
+    padding: 10px;
+  }
+  
+  .room-link {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #ffffff;
+    text-decoration: none;
+    color: black;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+  
+  .room-link:hover {
+    background-color: #ddd;
+  }
+  
+  .chat-container {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .chat-room {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    border: 1px solid #ddd;
+  }
+  
