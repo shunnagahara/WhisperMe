@@ -1,2 +1,15 @@
 # node_modules directory
 node_modules/
+.firebase/hosting.YnVpbGQ.cache
+build/asset-manifest.json
+build/favicon.ico
+build/index.html
+build/logo192.png
+build/manifest.json
+build/robots.txt
+build/img/airplane.png
+build/static/css/main.66b7e064.css
+build/static/css/main.66b7e064.css.map
+build/static/js/main.634c96c9.js
+build/static/js/main.634c96c9.js.LICENSE.txt
+build/static/js/main.634c96c9.js.map
