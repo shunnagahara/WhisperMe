@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import NameIcon from './NameIcon';
 import './ChatPage.css';
+import Modal from './Modal';
 
 type ChatLog = {
   key: string;
@@ -52,6 +53,7 @@ const formatHHMM = (time: Date) => {
 const ChatPage: React.FC = () => {
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
   const [inputMsg, setInputMsg] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const userName = useMemo(() => getUName(), []);
 
@@ -95,6 +97,11 @@ const ChatPage: React.FC = () => {
   };
 
   useEffect(() => {
+
+    const intervalId = setInterval(() => {
+      setIsModalOpen(true);
+    }, 60000); // 60000 ms = 60 seconds
+
     // 最新10件をとるためdateでソート
     const q = query(messagesRef, orderBy('date', 'desc'), limit(10));
     // データ同期(講読解除(cleanup)のためreturn)
@@ -112,13 +119,23 @@ const ChatPage: React.FC = () => {
           );
         }
       });
+      return () => clearInterval(intervalId);
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    submitMsg("I love you"); 
+  };
+
   return (
     <>
+      <Modal show={isModalOpen} handleClose={handleCloseModal}>
+        <h2>Reminder</h2>
+        <p>This modal appears every 60 seconds.</p>
+      </Modal>
       {/* チャットログ */}
       <div>
         {chatLogs.map((item) => (
