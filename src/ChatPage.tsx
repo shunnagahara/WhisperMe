@@ -171,29 +171,31 @@ const ChatPage: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
 
-      {/* メッセージ入力 */}
-      <form
-        className="chatform"
-        onSubmit={async (e) => {
-          e.preventDefault();
-          await submitMsg();
-        }}
-      >
-        <div>{userName}</div>
-        <input
-          type="text"
-          value={inputMsg}
-          onChange={(e) => setInputMsg(e.target.value)}
-        />
-        <input
-          type="image"
-          onClick={() => submitMsg}
-          src="../img/airplane.png"
-          alt="Send Button"
-        />
-      </form>
+        {/* メッセージ入力 */}
+        <div className="chatbox">
+          <form
+            className="chatform"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              await submitMsg();
+            }}
+          >
+            <div>{userName}</div>
+            <input
+              type="text"
+              value={inputMsg}
+              onChange={(e) => setInputMsg(e.target.value)}
+            />
+            <input
+              type="image"
+              onClick={() => submitMsg}
+              src="../img/airplane.png"
+              alt="Send Button"
+            />
+          </form>
+        </div>
+      </div>
     </>
   );
 };

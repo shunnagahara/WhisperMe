@@ -59,7 +59,18 @@
     margin-left: 5px;
     color: #ffcccc;
   }
-  
+
+  .chatform input[type='text'] {
+    width: 500px;
+    height: 30px;
+    border-radius: 5px;
+  }
+
+  .chatbox {
+    margin: 15px 0;
+    text-align: center;
+  }
+
   /* スマートフォン対応 */
   @media (max-width: 768px) {
     .chatroom-list {
@@ -71,6 +82,9 @@
     }
     .chatroom-logs-container {
       width: 100%;
+    }
+    .chatform input[type='text'] {
+      width: 300px;
     }
 }
   
