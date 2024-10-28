@@ -11,6 +11,10 @@
     margin: 0 auto; /* 横方向の中央寄せ */
     text-align: center; /* テキスト中央寄せ */
   }
+
+  .chatroom-logs-container {
+    width: 90%;
+  }
   
   .chatroom-title {
     font-size: 2rem;
@@ -62,7 +66,13 @@
       grid-template-columns: 1fr; /* SP用の1列配置 */
       gap: 15px; /* スマホでの余白調整 */
     }
-  }
+    .chatroom-container {
+      all: unset;
+    }
+    .chatroom-logs-container {
+      width: 100%;
+    }
+}
   
   @media (min-width: 1024px) {
     .room-button {

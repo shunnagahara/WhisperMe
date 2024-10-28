@@ -149,26 +149,28 @@ const ChatPage: React.FC = () => {
         <p>This modal appears every 60 seconds.</p>
       </Modal>
       {/* チャットログ */}
-      <div>
-        {chatLogs.map((item) => (
-          <div
-            className={`balloon_${userName === item.name ? 'r' : 'l'}`}
-            key={item.key}
-          >
-            {userName === item.name ? `[${formatHHMM(item.date)}]` : ''}
-            <div className="faceicon">
-              <NameIcon
-                userName={item.name}
-                option={{ foreColor: userName === item.name ? '#69C' : '#969' }}
-              />
+      <div className="chatroom-container">
+        <div className="chatroom-logs-container">
+          {chatLogs.map((item) => (
+            <div
+              className={`balloon_${userName === item.name ? 'r' : 'l'}`}
+              key={item.key}
+            >
+              {userName === item.name ? `[${formatHHMM(item.date)}]` : ''}
+              <div className="faceicon">
+                <NameIcon
+                  userName={item.name}
+                  option={{ foreColor: userName === item.name ? '#69C' : '#969' }}
+                />
+              </div>
+              <div style={{ marginLeft: '3px' }}>
+                {item.name}
+                <p className="says">{item.msg}</p>
+              </div>
+              {userName === item.name ? '' : `[${formatHHMM(item.date)}]`}
             </div>
-            <div style={{ marginLeft: '3px' }}>
-              {item.name}
-              <p className="says">{item.msg}</p>
-            </div>
-            {userName === item.name ? '' : `[${formatHHMM(item.date)}]`}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* メッセージ入力 */}
