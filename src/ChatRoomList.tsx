@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link} from 'react-router-dom';
+import { db } from './firebaseConfig';
+import { collection, onSnapshot } from 'firebase/firestore';
 import ChatPage from './ChatPage';
 import Modal from './Modal';
 import "./App.css";
@@ -11,7 +13,13 @@ interface UserData {
   gender: string;
 }
 
+interface RoomInfo {
+  id: string;
+  userCount: number;
+}
+
 const ChatRoomList: React.FC<ChatRoomListProps> = () => {
+  const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const [gender, setGender] = useState<string>(''); // 性別を管理する state
@@ -20,7 +28,23 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
 
   useEffect(() => {
     setShowModal(true);  // 初回レンダリング時にモーダルを開く
+    const roomNames = ['1', '2', '3', '4', '5', '6'];
+    const unsubscribers = roomNames.map((roomId) => {
+      const activeUsersRef = collection(db, 'chatroom', roomId, 'activeUsers');
+      return onSnapshot(activeUsersRef, (snapshot) => {
+        setRooms((prevRooms) => {
+          const newRoomData = {
+            id: roomId,
+            userCount: snapshot.size,
+          };
+          return [...prevRooms.filter((r) => r.id !== roomId), newRoomData];
+        });
+      });
+    });
+
+    return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
   }, []);
+
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value); // 入力された値をnameにセット
@@ -67,7 +91,7 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
           <p>送信された性別: {submittedData.gender}</p>
         </div>
       )}
-      <div className="sidebar">
+      {/* <div className="sidebar">
             <Link to="/chat/1" className="room-link">Room 1</Link>
             <Link to="/chat/2" className="room-link">Room 2</Link>
             <Link to="/chat/3" className="room-link">Room 3</Link>
@@ -84,7 +108,15 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
           <Route path="/chat/5" element={<ChatPage />} />
           <Route path="/chat/6" element={<ChatPage />} />
         </Routes>
+      </div> */}
+      <div className="sidebar">
+        {rooms.map((room) => (
+          <Link to={`/chat/${room.id}`} key={room.id} className="room-link">
+            Room {room.id} ({room.userCount} 人)
+          </Link>
+        ))}
       </div>
+      {/* チャットコンテナ */}
     </div>
   );
 };

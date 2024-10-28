@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from './firebaseConfig';
 import {
+  doc,
+  setDoc,
+  deleteDoc,
   collection,
   onSnapshot,
   addDoc,
@@ -54,11 +57,13 @@ const ChatPage: React.FC = () => {
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
   const [inputMsg, setInputMsg] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const isInitialMount = useRef(true);
   const userName = useMemo(() => getUName(), []);
 
   // /chat/:room urlのパラメータ(チャットルーム名)
   const { room } = useParams<{ room: string }>();
+  const roomRef = collection(db, 'chatroom', room, 'activeUsers');
+  const userRef = doc(roomRef, userName); 
   const messagesRef = useMemo(
     () => collection(db, 'chatroom', room, 'messages'),
     [room]
@@ -96,34 +101,41 @@ const ChatPage: React.FC = () => {
     setInputMsg('');
   };
 
+  const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    deleteDoc(userRef);
+    event.preventDefault();
+  };
+
   useEffect(() => {
-
-    const intervalId = setInterval(() => {
-      setIsModalOpen(true);
-    }, 60000); // 60000 ms = 60 seconds
-
-    // 最新10件をとるためdateでソート
-    const q = query(messagesRef, orderBy('date', 'desc'), limit(10));
-    // データ同期(講読解除(cleanup)のためreturn)
-    return onSnapshot(q, (snapshot: QuerySnapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          // チャットログへ追加
-          addLog(change.doc.id, change.doc.data());
-
-          // 画面最下部へスクロール
-          const doc = document.documentElement;
-          window.setTimeout(
-            () => window.scroll(0, doc.scrollHeight - doc.clientHeight),
-            100
-          );
-        }
+    if (isInitialMount.current) {
+      // ルームに入った際にユーザー情報を追加
+      setDoc(userRef, { name: userName }, { merge: true });
+      setInterval(() => { setIsModalOpen(true); }, 60000); // 60000 ms = 60 seconds
+      isInitialMount.current = false;
+      // 最新10件をとるためdateでソート
+      const q = query(messagesRef, orderBy('date', 'desc'), limit(10));
+      onSnapshot(q, (snapshot: QuerySnapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            // チャットログへ追加
+            addLog(change.doc.id, change.doc.data());
+            // 画面最下部へスクロール
+            const doc = document.documentElement;
+            window.setTimeout(
+              () => window.scroll(0, doc.scrollHeight - doc.clientHeight),
+              100
+            );
+          }
+        });
       });
-      return () => clearInterval(intervalId);
-    });
+      return
+    }
+    // beforeunloadイベントにリスナーを追加
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userName, userRef]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
