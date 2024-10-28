@@ -76,16 +76,21 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
           type="text" 
           value={name} 
           onChange={handleNameChange} 
-          placeholder="名前を入力" 
+          placeholder="名前を入力"
+          className="modal-input" 
         />
        <p>性別を選択してください：</p>
-        <select value={gender} onChange={handleGenderChange}>
+        <select 
+          value={gender} 
+          onChange={handleGenderChange}
+          className="modal-select"
+        >
           <option value="">選択してください</option>
           <option value="male">男性</option>
           <option value="female">女性</option>
           <option value="other">その他</option>
         </select>
-        <button onClick={handleSubmit}>送信</button>
+        <button onClick={handleSubmit} className="modal-button">送信</button>
       </Modal>
       {/* 送信後に表示される名前と性別 */}
       {submittedData && (
