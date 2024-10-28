@@ -5,6 +5,7 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import ChatPage from './ChatPage';
 import Modal from './Modal';
 import "./App.css";
+import './ChatRoomList.css';
 
 interface ChatRoomListProps {}
 
@@ -65,7 +66,9 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
   };
 
   return (
-    <div className="roombox">
+    <div className="chatroom-container">
+    {/* <div className="roombox"></div> */}
+      <h1 className="chatroom-title">チャットルーム一覧</h1>
       <Modal show={showModal} handleClose={handleCloseModal}>
         <h2>モーダル画面</h2>
         <p>ここにコンテンツを表示できます。</p>
@@ -91,25 +94,7 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
           <p>送信された性別: {submittedData.gender}</p>
         </div>
       )}
-      {/* <div className="sidebar">
-            <Link to="/chat/1" className="room-link">Room 1</Link>
-            <Link to="/chat/2" className="room-link">Room 2</Link>
-            <Link to="/chat/3" className="room-link">Room 3</Link>
-            <Link to="/chat/4" className="room-link">Room 4</Link>
-            <Link to="/chat/5" className="room-link">Room 5</Link>
-            <Link to="/chat/6" className="room-link">Room 6</Link>
-      </div>
-      <div className="chat-container">
-        <Routes>
-          <Route path="/chat/1" element={<ChatPage/>}/>
-          <Route path="/chat/2" element={<ChatPage />} />
-          <Route path="/chat/3" element={<ChatPage />} />
-          <Route path="/chat/4" element={<ChatPage />} />
-          <Route path="/chat/5" element={<ChatPage />} />
-          <Route path="/chat/6" element={<ChatPage />} />
-        </Routes>
-      </div> */}
-      <div className="sidebar">
+      <div className="chatroom-list">
         {rooms.map((room) => (
           <Link to={`/chat/${room.id}`} key={room.id} className="room-link">
             Room {room.id} ({room.userCount} 人)

@@ -1,0 +1,73 @@
+/* ChatRoomList.css */
+.chatroom-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* 上部に配置 */
+    background-color: #fff5f5; /* 赤系の背景色 */
+    min-height: 100vh;
+    width: 90%;
+    max-width: 800px; /* コンテナの最大幅 */
+    margin: 0 auto; /* 横方向の中央寄せ */
+    text-align: center; /* テキスト中央寄せ */
+  }
+  
+  .chatroom-title {
+    font-size: 2rem;
+    color: #b30000;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .chatroom-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* PC用の2列配置 */
+    gap: 20px 40px; /* 縦の間隔: 20px, 横の間隔: 30px */
+    width: 80%;
+    justify-items: center;
+  }
+  
+  .room-button {
+    background-color: #ff4d4d;
+    color: #fff;
+    padding: 25px 15px; /* 縦方向のパディングを増やして高さを確保 */
+    border-radius: 15px; /* 角を丸める */
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 160px; /* ボタンの最大幅 */
+    text-align: center;
+  }
+  
+  .room-button:hover {
+    background-color: #e60000;
+  }
+  
+  .room-button .user-count {
+    font-size: 0.9rem;
+    font-weight: normal;
+    margin-left: 5px;
+    color: #ffcccc;
+  }
+  
+  /* スマートフォン対応 */
+  @media (max-width: 768px) {
+    .chatroom-list {
+      grid-template-columns: 1fr; /* SP用の1列配置 */
+      gap: 15px; /* スマホでの余白調整 */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .room-button {
+      padding: 30px 20px; /* PC画面サイズでの縦方向パディングも増加 */
+      max-width: 200px;
+      font-size: 1.2rem;
+    }
+  }
