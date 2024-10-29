@@ -22,20 +22,19 @@
     margin-bottom: 20px;
     font-weight: bold;
   }
-  
+
   .chatroom-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* PC用の2列配置 */
-    gap: 20px 40px; /* 縦の間隔: 20px, 横の間隔: 30px */
-    width: 80%;
-    justify-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* 横中央寄せ */
+    gap: 20px; /* ボタン間のスペース */
   }
-  
+
   .room-button {
     background-color: #ff4d4d;
     color: #fff;
-    padding: 25px 15px; /* 縦方向のパディングを増やして高さを確保 */
-    border-radius: 15px; /* 角を丸める */
+    padding: 25px 15px;
+    border-radius: 15px;
     text-decoration: none;
     font-size: 1.1rem;
     font-weight: 500;
@@ -45,7 +44,6 @@
     transition: background-color 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 160px; /* ボタンの最大幅 */
     text-align: center;
   }
   
@@ -69,6 +67,26 @@
   .chatbox {
     margin: 15px 0;
     text-align: center;
+  }
+
+  .room-full .room-button {
+    background-color: #cccccc; /* Gray background for full rooms */
+    cursor: not-allowed;
+    color: #666666;
+  }
+  
+  .room-button.disabled {
+    pointer-events: none;
+    background-color: #cccccc;
+    color: #666666;
+  }
+
+  .room-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* 幅を広げて中央寄せ */
+    max-width: 160px; /* ボタンの最大幅 */
   }
 
   /* スマートフォン対応 */

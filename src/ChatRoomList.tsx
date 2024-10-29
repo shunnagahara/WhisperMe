@@ -99,11 +99,26 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
           <p>送信された性別: {submittedData.gender}</p>
         </div>
       )}
-      <div className="chatroom-list">
+      {/* <div className="chatroom-list">
         {rooms.map((room) => (
           <Link to={`/chat/${room.id}`} key={room.id} className="room-link">
             Room {room.id} ({room.userCount} 人)
           </Link>
+        ))}
+      </div> */}
+      <div className="chatroom-list">
+        {rooms.map((room) => (
+          <div key={room.id} className={`room-link ${room.userCount >= 2 ? 'room-full' : ''}`}>
+            {room.userCount < 2 ? (
+              <Link to={`/chat/${room.id}`} className="room-button">
+                Room {room.id} ({room.userCount} 人)
+              </Link>
+            ) : (
+              <div className="room-button disabled">
+                Room {room.id} - 満室
+              </div>
+            )}
+          </div>
         ))}
       </div>
       {/* チャットコンテナ */}
