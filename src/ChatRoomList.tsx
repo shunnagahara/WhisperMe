@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import {Link} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { db } from './firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
-import "./App.css";
 import './ChatRoomList.css';
 
 interface ChatRoomListProps {}
@@ -14,11 +13,13 @@ interface RoomInfo {
 
 const ChatRoomList: React.FC<ChatRoomListProps> = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const roomNames = ['1', '2', '3', '4', '5', '6'];
     const unsubscribers = roomNames.map((roomId) => {
       const activeUsersRef = collection(db, 'chatroom', roomId, 'activeUsers');
+      
       return onSnapshot(activeUsersRef, (snapshot) => {
         setRooms((prevRooms) => {
           const newRoomData = {
@@ -27,12 +28,21 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
           };
           return [...prevRooms.filter((r) => r.id !== roomId), newRoomData];
         });
+        setIsLoading(false); // データ取得が完了したらローディングを終了
       });
     });
 
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>ルームを読み込み中...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="chatroom-container">
@@ -52,7 +62,6 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
           </div>
         ))}
       </div>
-      {/* チャットコンテナ */}
     </div>
   );
 };
