@@ -9,6 +9,7 @@ interface ChatRoomListProps {}
 interface RoomInfo {
   id: string;
   userCount: number;
+  matchingRate?: number;
 }
 
 const ChatRoomList: React.FC<ChatRoomListProps> = () => {
@@ -19,21 +20,23 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
     const roomNames = ['1', '2', '3', '4', '5', '6'];
     const unsubscribers = roomNames.map((roomId) => {
       const activeUsersRef = collection(db, 'chatroom', roomId, 'activeUsers');
-      
       return onSnapshot(activeUsersRef, (snapshot) => {
         setRooms((prevRooms) => {
+          const userCount = snapshot.size;
+          const matchingRate = userCount === 1 ? Math.floor(Math.random() * 100) : undefined;
           const newRoomData = {
             id: roomId,
-            userCount: snapshot.size,
+            userCount,
+            matchingRate,
           };
           return [...prevRooms.filter((r) => r.id !== roomId), newRoomData];
         });
-        setIsLoading(false); // データ取得が完了したらローディングを終了
+        setIsLoading(false);
       });
     });
-
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
   }, []);
+  
 
   if (isLoading) {
     return (
@@ -53,6 +56,11 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
             {room.userCount < 2 ? (
               <Link to={`/chat/${room.id}`} className="room-button">
                 Room {room.id} ({room.userCount} 人)
+                {room.userCount === 1 && room.matchingRate && (
+                  <span className="matching-rate-heart">
+                    ❤️ {room.matchingRate}%
+                  </span>
+                )}
               </Link>
             ) : (
               <div className="room-button disabled">
@@ -60,6 +68,7 @@ const ChatRoomList: React.FC<ChatRoomListProps> = () => {
               </div>
             )}
           </div>
+
         ))}
       </div>
     </div>
