@@ -5,6 +5,12 @@ import './Profile.css';
 const Profile: React.FC = () => {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
+  const [favoriteAppearance, setFavoriteAppearance] = useState('');
+
+  // 男性・女性による「好きな外見」の選択肢
+  const maleAppearanceOptions = ['爽やか系', 'ワイルド系', '韓国系'];
+  const femaleAppearanceOptions = ['かわいい系', 'キレイ系', 'かわキレイ系'];
+
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -41,6 +47,21 @@ const Profile: React.FC = () => {
           <option value="male">男性</option>
           <option value="female">女性</option>
         </select>
+        {gender && (
+          <label className="profile-label">
+            好きな外見:
+            <select 
+              className="profile-select" 
+              value={favoriteAppearance} 
+              onChange={(e) => setFavoriteAppearance(e.target.value)}
+            >
+              <option value="">選択してください</option>
+              {(gender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map(option => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+        )}
         <button onClick={handleNext} className="profile-button">次へ</button>
       </div>
     </div>
