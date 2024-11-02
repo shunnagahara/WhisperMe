@@ -40,7 +40,6 @@ const Profile: React.FC = () => {
           <option value="">性別を選択</option>
           <option value="male">男性</option>
           <option value="female">女性</option>
-          <option value="other">その他</option>
         </select>
         <button onClick={handleNext} className="profile-button">次へ</button>
       </div>
