@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 
+const personalityOptions = ["やさしい", "オラオラ", "しずか", "おもしろい"];
+
 const Profile: React.FC = () => {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [favoriteAppearance, setFavoriteAppearance] = useState('');
+  const [selectedPersonalities, setSelectedPersonalities] = useState<string[]>([]);
 
   // 男性・女性による「好きな外見」の選択肢
   const maleAppearanceOptions = ['爽やか系', 'ワイルド系', '韓国系'];
@@ -24,6 +27,12 @@ const Profile: React.FC = () => {
     } else {
       alert('名前と性別を入力してください。');
     }
+  };
+
+  const togglePersonality = (personality: string) => {
+    setSelectedPersonalities((prev) =>
+      prev.includes(personality) ? prev.filter((p) => p !== personality) : [...prev, personality]
+    );
   };
 
   return (
@@ -62,6 +71,21 @@ const Profile: React.FC = () => {
             </select>
           </label>
         )}
+
+        <div className="personality-container">
+          <p>好きな性格を選択してください</p>
+          <div className="personality-options">
+            {personalityOptions.map((personality) => (
+              <div
+                key={personality}
+                className={`personality-tag ${selectedPersonalities.includes(personality) ? 'selected' : ''}`}
+                onClick={() => togglePersonality(personality)}
+              >
+                {personality}
+              </div>
+            ))}
+          </div>
+        </div>
         <button onClick={handleNext} className="profile-button">次へ</button>
       </div>
     </div>
