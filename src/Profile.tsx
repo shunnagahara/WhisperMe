@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 
 const personalityOptions = ["やさしい", "オラオラ", "しずか", "おもしろい"];
+const ageRangeOptions = ["18 - 25", "25 - 30", "30 - 40", "40 - 50", "50 - 60"];
 
 const Profile: React.FC = () => {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [favoriteAppearance, setFavoriteAppearance] = useState('');
   const [selectedPersonalities, setSelectedPersonalities] = useState<string[]>([]);
+  const [favoriteAgeRange, setFavoriteAgeRange] = useState('');
 
   // 男性・女性による「好きな外見」の選択肢
   const maleAppearanceOptions = ['爽やか系', 'ワイルド系', '韓国系'];
@@ -86,6 +88,23 @@ const Profile: React.FC = () => {
             ))}
           </div>
         </div>
+
+        <div className="personality-container">
+          <label className="profile-label">
+            好きな年代:
+            <select
+              className="profile-select"
+              value={favoriteAgeRange}
+              onChange={(e) => setFavoriteAgeRange(e.target.value)}
+            >
+              <option value="">選択してください</option>
+              {ageRangeOptions.map(option => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
         <button onClick={handleNext} className="profile-button">次へ</button>
       </div>
     </div>
