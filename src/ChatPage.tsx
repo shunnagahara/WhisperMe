@@ -15,7 +15,6 @@ import {
 } from 'firebase/firestore';
 import NameIcon from './NameIcon';
 import './ChatPage.css';
-import Modal from './Modal';
 
 type ChatLog = {
   key: string;
@@ -144,10 +143,6 @@ const ChatPage: React.FC = () => {
 
   return (
     <>
-      <Modal show={isModalOpen} handleClose={handleCloseModal}>
-        <h2>Reminder</h2>
-        <p>This modal appears every 60 seconds.</p>
-      </Modal>
       {/* チャットログ */}
       <div className="chatroom-container">
         <div className="chatroom-logs-container">

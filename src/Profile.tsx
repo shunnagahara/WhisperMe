@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Modal from './Modal';
+import './Modal.css';
 import './Profile.css';
 
 const personalityOptions = ["やさしい", "オラオラ", "しずか", "おもしろい"];
@@ -11,6 +13,7 @@ const Profile: React.FC = () => {
   const [favoriteAppearance, setFavoriteAppearance] = useState('');
   const [selectedPersonalities, setSelectedPersonalities] = useState<string[]>([]);
   const [favoriteAgeRange, setFavoriteAgeRange] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // 男性・女性による「好きな外見」の選択肢
@@ -32,6 +35,14 @@ const Profile: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const isUserDataComplete = () => {
+    const storedUserData = localStorage.getItem('whisper-me-username');
+    if (storedUserData) {
+      const { name, gender, favoriteAppearance, selectedPersonalities, favoriteAgeRange } = JSON.parse(storedUserData);
+      return name && gender && favoriteAppearance && selectedPersonalities && favoriteAgeRange;
+    }
+    return false;
+  };
 
   const handleNext = () => {
     if (validateInputs()) {
@@ -47,8 +58,32 @@ const Profile: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    if (isUserDataComplete()) {
+      setShowModal(true); // Show modal if user data is complete
+    }
+  }, []);
+
+  const handleModalClose = (navigateToChat: boolean) => {
+    setShowModal(false);
+    if (navigateToChat) {
+      navigate('/list'); // Navigate to chat room list if user agrees
+    }
+  };
+
   return (
     <div className="profile-container">
+
+      <Modal
+        show={showModal}
+        handleClose={() => handleModalClose(false)}
+        title="プロフィールが保存されています"
+        message="保存されたプロフィールでチャットルームに移動しますか？"
+      >
+        <button className="modal-button modal-button-confirm" onClick={() => handleModalClose(true)}>はい</button>
+        <button className="modal-button modal-button-cancel" onClick={() => handleModalClose(false)}>いいえ</button>
+      </Modal>
+
       <div className="profile-card">
         <h1>プロフィール登録</h1>
 
