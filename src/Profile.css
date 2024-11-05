@@ -31,12 +31,11 @@
   }
   
   .profile-input {
-    width: 100%;
+    width: 95%;
     padding: 0.75rem;
     font-size: 1rem;
     border: 1px solid #ddd;
     border-radius: 8px;
-    margin-bottom: 1rem;
     transition: border-color 0.3s ease;
   }
   
@@ -72,8 +71,6 @@
     font-size: 1rem;
     border: 1px solid #ddd;
     border-radius: 8px;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
     transition: border-color 0.3s ease;
   }
   
@@ -125,7 +122,19 @@
   .profile-button {
     margin-top: 24px; /* ここで好きな性格との間にスペースを追加 */
   }
+
+  .profile-input-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
   
+  .profile-card .error-text {
+    color: red;
+    font-size: 0.75rem;
+    width: 100%;
+    text-align: left;
+  }
+
   /* モバイル対応 */
   @media (max-width: 480px) {
     .profile-card {
