@@ -35,7 +35,7 @@ const Profile: React.FC = () => {
 
   const handleNext = () => {
     if (validateInputs()) {
-      const userData = { name, gender };
+      const userData = { name, gender, favoriteAppearance, selectedPersonalities, favoriteAgeRange };
       localStorage.setItem('whisper-me-username', JSON.stringify(userData));
       navigate('/list');
     }
