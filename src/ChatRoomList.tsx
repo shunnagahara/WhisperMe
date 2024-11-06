@@ -14,6 +14,7 @@ interface RoomInfo {
 const ChatRoomList: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const targetGender = JSON.parse(localStorage.getItem('whisper-me-username') || '{}').targetGender;
 
   useEffect(() => {
     const roomNames = ['1', '2', '3', '4', '5', '6'];
@@ -61,30 +62,33 @@ const ChatRoomList: React.FC = () => {
     <div className="chatroom-container">
       <h1 className="chatroom-title">チャットルーム一覧</h1>
       <div className="chatroom-list">
-        {rooms.map((room) => (
-          <div key={room.id} className={`room-link ${room.userCount >= 2 ? 'room-full' : ''}`}>
-            {room.userCount < 2 ? (
-              <Link to={`/chat/${room.id}`} className="room-button">
-                Room {room.id} ({room.userCount} 人)
-                {room.userCount === 1 && room.matchingRate && (
-                  <span className="matching-rate-heart">
-                    ❤️ {room.matchingRate}%
-                  </span>
-                )}
-                {/* ユーザーの名前と性別を表示 */}
-                {room.users?.map((user, index) => (
-                  <div key={index}>
-                    {user.name} - {user.gender}
-                  </div>
-                ))}
-              </Link>
-            ) : (
-              <div className="room-button disabled">
-                Room {room.id} - 満室
-              </div>
-            )}
-          </div>
-        ))}
+        {rooms.map((room) => {
+          const isDisabled = room.userCount === 1 && room.users && room.users[0].gender !== targetGender;
+
+          return (
+            <div key={room.id} className={`room-link ${room.userCount >= 2 || isDisabled ? 'room-full' : ''}`}>
+              {!isDisabled && room.userCount < 2 ? (
+                <Link to={`/chat/${room.id}`} className="room-button">
+                  Room {room.id} ({room.userCount} 人)
+                  {room.userCount === 1 && room.matchingRate && (
+                    <span className="matching-rate-heart">
+                      ❤️ {room.matchingRate}%
+                    </span>
+                  )}
+                  {room.users?.map((user, index) => (
+                    <div key={index}>
+                      {user.name} - {user.gender}
+                    </div>
+                  ))}
+                </Link>
+              ) : (
+                <div className="room-button disabled">
+                  Room {room.id} - 入室不可
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
