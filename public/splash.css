@@ -1,0 +1,25 @@
+
+#splash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(212, 222, 230); /* 指定された背景色 */
+    z-index: 1000;
+    }
+  
+  #splash-logo {
+    width: 200px; /* ロゴのサイズを調整してください */
+    animation: fadeInOut 3s ease forwards;
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  

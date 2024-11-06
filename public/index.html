@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/splash.css">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -28,7 +29,10 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="splash">
+      <img src="%PUBLIC_URL%/logo.png" alt="WhisperMe Logo" id="splash-logo">
+    </div>
+    <div id="root" style="display: none;"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
