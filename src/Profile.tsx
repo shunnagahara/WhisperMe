@@ -10,6 +10,7 @@ const ageRangeOptions = ["18 - 25", "25 - 30", "30 - 40", "40 - 50", "50 - 60"];
 const Profile: React.FC = () => {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
+  const [targetGender, setTargetGender] = useState('');
   const [favoriteAppearance, setFavoriteAppearance] = useState('');
   const [selectedPersonalities, setSelectedPersonalities] = useState<string[]>([]);
   const [favoriteAgeRange, setFavoriteAgeRange] = useState('');
@@ -27,6 +28,7 @@ const Profile: React.FC = () => {
 
     if (!name.trim()) newErrors.name = '名前を入力してください。';
     if (!gender) newErrors.gender = '性別を選択してください。';
+    if (!targetGender) newErrors.targetGender = '対象性別を選択してください。';
     if (gender && !favoriteAppearance) newErrors.favoriteAppearance = '好きな外見を選択してください。';
     if (!favoriteAgeRange) newErrors.favoriteAgeRange = '好きな年代を選択してください。';
     if (selectedPersonalities.length === 0) newErrors.selectedPersonalities = '好きな性格を選択してください。';
@@ -38,15 +40,15 @@ const Profile: React.FC = () => {
   const isUserDataComplete = () => {
     const storedUserData = localStorage.getItem('whisper-me-username');
     if (storedUserData) {
-      const { name, gender, favoriteAppearance, selectedPersonalities, favoriteAgeRange } = JSON.parse(storedUserData);
-      return name && gender && favoriteAppearance && selectedPersonalities && favoriteAgeRange;
+      const { name, gender, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange } = JSON.parse(storedUserData);
+      return name && gender && targetGender && favoriteAppearance && selectedPersonalities && favoriteAgeRange;
     }
     return false;
   };
 
   const handleNext = () => {
     if (validateInputs()) {
-      const userData = { name, gender, favoriteAppearance, selectedPersonalities, favoriteAgeRange };
+      const userData = { name, gender, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange };
       localStorage.setItem('whisper-me-username', JSON.stringify(userData));
       navigate('/list');
     }
@@ -109,6 +111,19 @@ const Profile: React.FC = () => {
             <option value="female">女性</option>
           </select>
           {errors.gender && <p className="error-text">{errors.gender}</p>}
+        </div>
+
+        <div className="profile-input-container">
+          <select
+            value={targetGender}
+            onChange={(e) => setTargetGender(e.target.value)}
+            className="profile-select"
+          >
+            <option value="">対象異性を選択</option>
+            <option value="male">男性</option>
+            <option value="female">女性</option>
+          </select>
+          {errors.targetGender && <p className="error-text">{errors.targetGender}</p>}
         </div>
 
         <div className="profile-input-container">
