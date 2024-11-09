@@ -6,10 +6,11 @@ interface ModalProps {
   handleClose: () => void;
   title: string;
   message: string;
+  subMessage?: string;
   children?: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ show, handleClose, title, message, children }) => {
+const Modal: React.FC<ModalProps> = ({ show, handleClose, title, message, subMessage, children }) => {
   if (!show) return null;
 
   return (
@@ -20,6 +21,7 @@ const Modal: React.FC<ModalProps> = ({ show, handleClose, title, message, childr
         </span>
         <div className="modal-header">{title}</div>
         <div className="modal-text">{message}</div>
+        <div className="modal-text">{subMessage}</div>
         {children}
       </div>
     </div>

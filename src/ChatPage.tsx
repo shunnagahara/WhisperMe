@@ -14,7 +14,9 @@ import {
   limit,
 } from 'firebase/firestore';
 import NameIcon from './NameIcon';
+import Modal from './Modal'; // モーダルコンポーネントをインポート
 import './ChatPage.css';
+import './Modal.css';
 
 type ChatLog = {
   key: string;
@@ -56,6 +58,7 @@ const ChatPage: React.FC = () => {
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
   const [inputMsg, setInputMsg] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalTimer = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
   const userName = useMemo(() => getUName(), []);
 
@@ -106,6 +109,9 @@ const ChatPage: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!isModalOpen) {
+      modalTimer.current = setInterval(() => setIsModalOpen(true), 30000); // 5分おき
+    }
     if (isInitialMount.current) {
       // ルームに入った際にユーザー情報を追加
       setDoc(userRef, { name: userName }, { merge: true });
@@ -134,11 +140,12 @@ const ChatPage: React.FC = () => {
     return
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userName, userRef]);
+  }, [userName, userRef, isModalOpen]);
 
+  // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    submitMsg("I love you"); 
+    submitMsg("愛してます"); // チャットに「愛してます」を送信
   };
 
   return (
@@ -190,6 +197,12 @@ const ChatPage: React.FC = () => {
             />
           </form>
         </div>
+
+      {/* モーダルコンポーネント */}
+      <Modal show={isModalOpen} handleClose={handleCloseModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？">
+        <input className="modal-input" type="text" value="愛してます" readOnly />
+        <button className="modal-submit-button" onClick={handleCloseModal}>送信</button>
+      </Modal>
       </div>
     </>
   );
