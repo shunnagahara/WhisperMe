@@ -7,10 +7,11 @@ interface ModalProps {
   title: string;
   message: string;
   subMessage?: string;
+  countdown?: string;
   children?: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ show, handleClose, title, message, subMessage, children }) => {
+const Modal: React.FC<ModalProps> = ({ show, handleClose, title, message, subMessage, countdown, children }) => {
   if (!show) return null;
 
   return (
@@ -22,6 +23,7 @@ const Modal: React.FC<ModalProps> = ({ show, handleClose, title, message, subMes
         <div className="modal-header">{title}</div>
         <div className="modal-text">{message}</div>
         <div className="modal-text">{subMessage}</div>
+        <div className="modal-countdown-text">{countdown}</div>
         {children}
       </div>
     </div>

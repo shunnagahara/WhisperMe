@@ -58,7 +58,9 @@ const ChatPage: React.FC = () => {
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
   const [inputMsg, setInputMsg] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [countdown, setCountdown] = useState(10);
   const modalTimer = useRef<NodeJS.Timeout | null>(null);
+  const countdownTimer = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
   const userName = useMemo(() => getUName(), []);
 
@@ -70,6 +72,11 @@ const ChatPage: React.FC = () => {
     () => collection(db, 'chatroom', room, 'messages'),
     [room]
   );
+
+  const closeWithoutSending = () => {
+    setIsModalOpen(false);
+    setCountdown(10);
+  };
 
   /**
    * チャットログに追加
@@ -109,9 +116,34 @@ const ChatPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!isModalOpen) {
-      modalTimer.current = setInterval(() => setIsModalOpen(true), 30000); // 5分おき
+    if (isModalOpen) {
+      countdownTimer.current = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else {
+      if (countdownTimer.current) clearInterval(countdownTimer.current);
     }
+
+    return () => {
+      if (countdownTimer.current) clearInterval(countdownTimer.current);
+    };
+  }, [isModalOpen]);  
+
+  useEffect(() => {
+    if (countdown === 0) {
+      closeWithoutSending();
+    }
+  }, [countdown]);
+
+  useEffect(() => {
+    modalTimer.current = setInterval(() => setIsModalOpen(true), 300000); // 5分おき
+
+    return () => {
+      if (modalTimer.current) clearInterval(modalTimer.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (isInitialMount.current) {
       // ルームに入った際にユーザー情報を追加
       setDoc(userRef, { name: userName }, { merge: true });
@@ -140,12 +172,13 @@ const ChatPage: React.FC = () => {
     return
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userName, userRef, isModalOpen]);
+  }, [userName, userRef]);
 
   // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseModal = () => {
     setIsModalOpen(false);
     submitMsg("愛してます"); // チャットに「愛してます」を送信
+    setCountdown(10);
   };
 
   return (
@@ -158,7 +191,7 @@ const ChatPage: React.FC = () => {
               className={`balloon_${userName === item.name ? 'r' : 'l'}`}
               key={item.key}
             >
-              {userName === item.name ? `[${formatHHMM(item.date)}]` : ''}
+              {/* {userName === item.name ? `[${formatHHMM(item.date)}]` : ''} */}
               <div className="faceicon">
                 <NameIcon
                   userName={item.name}
@@ -166,10 +199,10 @@ const ChatPage: React.FC = () => {
                 />
               </div>
               <div style={{ marginLeft: '3px' }}>
-                {item.name}
+                {/* {item.name} */}
                 <p className="says">{item.msg}</p>
               </div>
-              {userName === item.name ? '' : `[${formatHHMM(item.date)}]`}
+              {/* {userName === item.name ? '' : `[${formatHHMM(item.date)}]`} */}
             </div>
           ))}
         </div>
@@ -199,7 +232,7 @@ const ChatPage: React.FC = () => {
         </div>
 
       {/* モーダルコンポーネント */}
-      <Modal show={isModalOpen} handleClose={handleCloseModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？">
+      <Modal show={isModalOpen} handleClose={handleCloseModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
         <input className="modal-input" type="text" value="愛してます" readOnly />
         <button className="modal-submit-button" onClick={handleCloseModal}>送信</button>
       </Modal>
