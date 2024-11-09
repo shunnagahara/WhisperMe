@@ -59,6 +59,7 @@ const ChatPage: React.FC = () => {
   const [inputMsg, setInputMsg] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [countdown, setCountdown] = useState(10);
+  const [isLoveConfessionModalOpen, setIsLoveConfessionModalOpen] = useState(false);
   const modalTimer = useRef<NodeJS.Timeout | null>(null);
   const countdownTimer = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
@@ -156,6 +157,10 @@ const ChatPage: React.FC = () => {
           if (change.type === 'added') {
             // チャットログへ追加
             addLog(change.doc.id, change.doc.data());
+            if (change.doc.data().msg === "愛してますよ") {
+              // チャットメッセージが「愛してますよ」ならモーダルを開く
+              setIsLoveConfessionModalOpen(true);
+            }
             // 画面最下部へスクロール
             const doc = document.documentElement;
             window.setTimeout(
@@ -179,6 +184,12 @@ const ChatPage: React.FC = () => {
     setIsModalOpen(false);
     submitMsg("愛してます"); // チャットに「愛してます」を送信
     setCountdown(10);
+  };
+
+  // モーダルを閉じてメッセージを送信
+  const handleLoveConfessionSend = () => {
+    setIsLoveConfessionModalOpen(false);
+    submitMsg("私も愛してます"); // チャットに「私も愛してます」を送信
   };
 
   return (
@@ -231,11 +242,16 @@ const ChatPage: React.FC = () => {
           </form>
         </div>
 
-      {/* モーダルコンポーネント */}
-      <Modal show={isModalOpen} handleClose={handleCloseModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
-        <input className="modal-input" type="text" value="愛してます" readOnly />
-        <button className="modal-submit-button" onClick={handleCloseModal}>送信</button>
-      </Modal>
+        {/* モーダルコンポーネント */}
+        <Modal show={isModalOpen} handleClose={handleCloseModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
+          <input className="modal-input" type="text" value="愛してます" readOnly />
+          <button className="modal-submit-button" onClick={handleCloseModal}>送信</button>
+        </Modal>
+
+        <Modal show={isLoveConfessionModalOpen} handleClose={() => setIsLoveConfessionModalOpen(false)} title="愛の告白" message="相手から愛の告白がありました" subMessage="あなたも思いを伝えますか？" countdown=''>
+          <input type="text" value="私も愛してます" readOnly className="modal-input" />
+          <button onClick={handleLoveConfessionSend} className="modal-submit-button">送信</button>
+        </Modal>
       </div>
     </>
   );
