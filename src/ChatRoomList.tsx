@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { db } from './firebaseConfig';
-import { collection, onSnapshot, doc, getDoc } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import './ChatRoomList.css';
 
 interface RoomInfo {
   id: string;
   userCount: number;
   matchingRate?: number;
-  users?: Array<{ name: string; gender: string }>;
+  users?: Array<User>;
 }
+
+type User = {
+  name: string;
+  gender: string;
+  targetGender: string;
+  favoriteAppearance: string;
+  selectedPersonalities: Object;
+  favoriteAgeRange: string;
+};
+
 
 const ChatRoomList: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
@@ -25,8 +35,7 @@ const ChatRoomList: React.FC = () => {
         // 各ユーザーのドキュメントIDを取得し、詳細情報を取得する
         const users = await Promise.all(
           snapshot.docs.map(async (userDoc) => {
-            const userData = userDoc.data() as { name: string; gender: string };
-            return userData;
+            return userDoc.data() as User
           })
         );
 
@@ -80,11 +89,6 @@ const ChatRoomList: React.FC = () => {
                       ❤️ {room.matchingRate}%
                     </span>
                   )}
-                  {room.users?.map((user, index) => (
-                    <div key={index}>
-                      {user.name} - {user.gender}
-                    </div>
-                  ))}
                 </Link>
               ) : (
                 <div className="room-button disabled">
