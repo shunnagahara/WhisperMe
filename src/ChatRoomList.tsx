@@ -58,16 +58,21 @@ const ChatRoomList: React.FC = () => {
     );
   }
 
+  const isRoomAvailable = (userCount:number, userGenger?:string) => {
+    if (userCount === 0) return true
+    if (userCount === 1 && (userGenger === targetGender)) return true
+    return false
+  }
+
   return (
     <div className="chatroom-container">
       <h1 className="chatroom-title">チャットルーム一覧</h1>
       <div className="chatroom-list">
         {rooms.map((room) => {
-          const isDisabled = room.userCount === 1 && room.users && room.users[0].gender !== targetGender;
 
           return (
-            <div key={room.id} className={`room-link ${room.userCount >= 2 || isDisabled ? 'room-full' : ''}`}>
-              {!isDisabled && room.userCount < 2 ? (
+            <div key={room.id} className={`room-link ${room.userCount >= 2  ? 'room-full' : ''}`}>
+              {isRoomAvailable(room.userCount, room.users[0]?.gender) ? (
                 <Link to={`/chat/${room.id}`} className="room-button">
                   Room {room.id} ({room.userCount} 人)
                   {room.userCount === 1 && room.matchingRate && (
