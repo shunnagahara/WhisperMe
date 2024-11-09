@@ -25,29 +25,30 @@ type ChatLog = {
   date: Date;
 };
 
+type User = {
+  name: string;
+  gender: string;
+  targetGender: string;
+  favoriteAppearance: string;
+  selectedPersonalities: Object;
+  favoriteAgeRange: string;
+};
+
 /**
  * ユーザー名 (localStrageに保存)
  * */
-const getUName = (): string => {
-  const userName = localStorage.getItem('whisper-me-username');
-  if (!userName) {
-    const inputName = window.prompt('ユーザー名を入力してください', '');
-    if (inputName) {
-      localStorage.setItem('whisper-me-username', inputName);
-
-      return inputName;
-    }
-  }
-
-  return userName;
+const fetchUser = (): User => {
+  const user = JSON.parse(localStorage.getItem('whisper-me-username'));
+  return {
+    name: user.name,
+    gender: user.gender,
+    targetGender: user.targetGender,
+    favoriteAppearance: user.favoriteAppearance,
+    selectedPersonalities: user.selectedPersonalities,
+    favoriteAgeRange: user.favoriteAgeRange,
+  };
 };
 
-/**
- * UNIX TIME => hh:mm
- * */
-const formatHHMM = (time: Date) => {
-  return new Date(time).toTimeString().slice(0, 5);
-};
 
 /**
  * チャットコンポーネント(Line風)
@@ -63,12 +64,12 @@ const ChatPage: React.FC = () => {
   const modalTimer = useRef<NodeJS.Timeout | null>(null);
   const countdownTimer = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
-  const userName = useMemo(() => getUName(), []);
+  const user = useMemo(() => fetchUser(), []);
 
   // /chat/:room urlのパラメータ(チャットルーム名)
   const { room } = useParams<{ room: string }>();
   const roomRef = collection(db, 'chatroom', room, 'activeUsers');
-  const userRef = doc(roomRef, userName); 
+  const userRef = doc(roomRef, user.name); 
   const messagesRef = useMemo(
     () => collection(db, 'chatroom', room, 'messages'),
     [room]
@@ -103,7 +104,7 @@ const ChatPage: React.FC = () => {
     }
 
     await addDoc(messagesRef, {
-      name: userName,
+      name: user.name,
       msg: message,
       date: new Date().getTime(),
     });
@@ -147,7 +148,7 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     if (isInitialMount.current) {
       // ルームに入った際にユーザー情報を追加
-      setDoc(userRef, { name: userName }, { merge: true });
+      setDoc(userRef, user, { merge: true });
       setInterval(() => { setIsModalOpen(true); }, 60000); // 60000 ms = 60 seconds
       isInitialMount.current = false;
       // 最新10件をとるためdateでソート
@@ -177,7 +178,7 @@ const ChatPage: React.FC = () => {
     return
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userName, userRef]);
+  }, [user.name, userRef]);
 
   // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseModal = () => {
@@ -199,14 +200,14 @@ const ChatPage: React.FC = () => {
         <div className="chatroom-logs-container">
           {chatLogs.map((item) => (
             <div
-              className={`balloon_${userName === item.name ? 'r' : 'l'}`}
+              className={`balloon_${user.name === item.name ? 'r' : 'l'}`}
               key={item.key}
             >
               {/* {userName === item.name ? `[${formatHHMM(item.date)}]` : ''} */}
               <div className="faceicon">
                 <NameIcon
                   userName={item.name}
-                  option={{ foreColor: userName === item.name ? '#69C' : '#969' }}
+                  option={{ foreColor: user.name === item.name ? '#69C' : '#969' }}
                 />
               </div>
               <div style={{ marginLeft: '3px' }}>
@@ -227,7 +228,7 @@ const ChatPage: React.FC = () => {
               await submitMsg();
             }}
           >
-            <div>{userName}</div>
+            <div>{user.name}</div>
             <input
               type="text"
               value={inputMsg}
