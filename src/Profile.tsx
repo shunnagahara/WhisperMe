@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="profile-input-container">
-          {gender && (
+          {targetGender && (
             <label className="profile-label">
               好きな外見:
               <select 
@@ -136,7 +136,7 @@ const Profile: React.FC = () => {
                 onChange={(e) => setFavoriteAppearance(e.target.value)}
               >
                 <option value="">選択してください</option>
-                {(gender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map(option => (
+                {(targetGender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map(option => (
                   <option key={option} value={option}>{option}</option>
                 ))}
               </select>
