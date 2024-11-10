@@ -166,25 +166,24 @@ const Profile: React.FC = () => {
 
         <div className="profile-input-container">
           {targetGender && (
-            <label className="profile-label">
-              {/* 好きな外見: */}
+            <div className="personality-container">
               <div className="profile-input-title-div">
-                <p>好きな外見を選択</p>
+                <p>好きな外見を選択してください</p>
               </div>
-              <select 
-                className="profile-select" 
-                value={favoriteAppearance} 
-                onChange={(e) => setFavoriteAppearance(e.target.value)}
-              >
-                <option value="">選択してください</option>
-                {(targetGender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map(option => (
-                  <option key={option} value={option}>{option}</option>
+              <div className="personality-options">
+                {(targetGender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map((appearance) => (
+                  <div
+                    key={appearance}
+                    className={`personality-tag ${favoriteAppearance === appearance ? 'selected' : ''}`}
+                    onClick={() => setFavoriteAppearance(appearance)}
+                  >
+                    {appearance}
+                  </div>
                 ))}
-              </select>
+              </div>
               {errors.favoriteAppearance && <p className="error-text">{errors.favoriteAppearance}</p>}
-            </label>
+            </div>
           )}
-
         </div>
 
         <div className="profile-input-container">
@@ -207,7 +206,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        <div className="profile-input-container">
+        {/* <div className="profile-input-container">
           <div className="personality-container">
             <div className="profile-input-title-div">
               <p>好きな年代を選択</p>
@@ -225,6 +224,26 @@ const Profile: React.FC = () => {
               </select>
               {errors.favoriteAgeRange && <p className="error-text">{errors.favoriteAgeRange}</p>}
             </label>
+          </div>
+        </div> */}
+
+        <div className="profile-input-container">
+          <div className="personality-container">
+            <div className="profile-input-title-div">
+              <p>好きな年代を選択してください</p>
+            </div>
+            <div className="personality-options">
+              {ageRangeOptions.map((ageGroup) => (
+                <div
+                  key={ageGroup}
+                  className={`personality-tag ${favoriteAgeRange === ageGroup ? 'selected' : ''}`}
+                  onClick={() => setFavoriteAgeRange(ageGroup)}
+                >
+                  {ageGroup}
+                </div>
+              ))}
+            </div>
+            {errors.favoriteAgeGroup && <p className="error-text">{errors.favoriteAgeGroup}</p>}
           </div>
         </div>
 

@@ -95,6 +95,7 @@
   .personality-options {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-evenly;
     gap: 8px;
     margin-top: 8px;
   }
