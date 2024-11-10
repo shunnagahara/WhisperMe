@@ -39,7 +39,7 @@ type User = {
  * ユーザー名 (localStrageに保存)
  * */
 const fetchUser = (): User => {
-  const user = JSON.parse(localStorage.getItem('whisper-me-username'));
+  const user = JSON.parse(localStorage.getItem('lovyu-user'));
   return {
     name: user.name,
     gender: user.gender,

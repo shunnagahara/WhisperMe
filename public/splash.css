@@ -1,5 +1,5 @@
 
-#splash {
+  #splash {
     position: fixed;
     top: 0;
     left: 0;
@@ -8,12 +8,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(212, 222, 230); /* 指定された背景色 */
+    background-color: white; /* 背景色を白に */
     z-index: 1000;
-    }
+  }
   
   #splash-logo {
     width: 200px; /* ロゴのサイズを調整してください */
+    animation: fadeInOut 3s ease forwards;
+  }
+
+  #splash-text {
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 80px; /* 適宜サイズを調整 */
+    color: #ff004d;
+    /* font-weight: bold; */
     animation: fadeInOut 3s ease forwards;
   }
   

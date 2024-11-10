@@ -24,7 +24,7 @@ type User = {
 const ChatRoomList: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const targetGender = JSON.parse(localStorage.getItem('whisper-me-username') || '{}').targetGender;
+  const targetGender = JSON.parse(localStorage.getItem('lovyu-user') || '{}').targetGender;
 
   useEffect(() => {
     const roomNames = ['1', '2', '3', '4', '5', '6'];

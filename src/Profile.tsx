@@ -38,7 +38,7 @@ const Profile: React.FC = () => {
   };
 
   const isUserDataComplete = () => {
-    const storedUserData = localStorage.getItem('whisper-me-username');
+    const storedUserData = localStorage.getItem('lovyu-user');
     if (storedUserData) {
       const { name, gender, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange } = JSON.parse(storedUserData);
       return name && gender && targetGender && favoriteAppearance && selectedPersonalities && favoriteAgeRange;
@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
   const handleNext = () => {
     if (validateInputs()) {
       const userData = { name, gender, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange };
-      localStorage.setItem('whisper-me-username', JSON.stringify(userData));
+      localStorage.setItem('lovyu-user', JSON.stringify(userData));
       navigate('/list');
     }
   };
