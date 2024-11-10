@@ -134,6 +134,38 @@
     width: 100%;
     text-align: left;
   }
+  .profile-label {
+    margin-bottom: 20px;
+  }
+
+  .gender-selection {
+    display: flex;
+    gap: 1rem;
+    padding: 0 20px;
+    justify-content: space-evenly;
+  }
+  
+  .hidden-radio {
+    display: none;
+  }
+  
+  .icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+  }
+  
+  .icon.selected {
+    opacity: 1;
+    border: 2px solid #4CAF50;
+    border-radius: 50%;
+  }
+
+  .profile-input-title-div {
+    margin-bottom: 20px;
+  }
 
   /* モバイル対応 */
   @media (max-width: 480px) {

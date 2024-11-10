@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { ReactComponent as MaleIcon } from './icons/male.svg'; // 男性アイコンのSVG
+import { ReactComponent as FemaleIcon } from './icons/female.svg'; // 女性アイコンのSVG
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import './Modal.css';
@@ -101,35 +103,74 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="profile-input-container">
-          <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="profile-select"
-          >
-            <option value="">性別を選択</option>
-            <option value="male">男性</option>
-            <option value="female">女性</option>
-          </select>
+          <div className="profile-input-title-div">
+            <p>あなたの性別を選択:</p>
+          </div>
+          <div className="gender-selection">
+            <label>
+              <input
+                type="radio"
+                name="gender"
+                value="male"
+                checked={gender === 'male'}
+                onChange={() => setGender('male')}
+                className="hidden-radio"
+              />
+              <MaleIcon className={`icon ${gender === 'male' ? 'selected' : ''}`} />
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="gender"
+                value="female"
+                checked={gender === 'female'}
+                onChange={() => setGender('female')}
+                className="hidden-radio"
+              />
+              <FemaleIcon className={`icon ${gender === 'female' ? 'selected' : ''}`} />
+            </label>
+          </div>
           {errors.gender && <p className="error-text">{errors.gender}</p>}
         </div>
 
         <div className="profile-input-container">
-          <select
-            value={targetGender}
-            onChange={(e) => setTargetGender(e.target.value)}
-            className="profile-select"
-          >
-            <option value="">対象異性を選択</option>
-            <option value="male">男性</option>
-            <option value="female">女性</option>
-          </select>
+          <div className="profile-input-title-div">
+            <p>対象の性別を選択:</p>
+          </div>
+          <div className="gender-selection">
+            <label>
+              <input
+                type="radio"
+                name="targetGender"
+                value="male"
+                checked={targetGender === 'male'}
+                onChange={() => setTargetGender('male')}
+                className="hidden-radio"
+              />
+              <MaleIcon className={`icon ${targetGender === 'male' ? 'selected' : ''}`} />
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="targetGender"
+                value="female"
+                checked={targetGender === 'female'}
+                onChange={() => setTargetGender('female')}
+                className="hidden-radio"
+              />
+              <FemaleIcon className={`icon ${targetGender === 'female' ? 'selected' : ''}`} />
+            </label>
+          </div>
           {errors.targetGender && <p className="error-text">{errors.targetGender}</p>}
         </div>
 
         <div className="profile-input-container">
           {targetGender && (
             <label className="profile-label">
-              好きな外見:
+              {/* 好きな外見: */}
+              <div className="profile-input-title-div">
+                <p>好きな外見を選択</p>
+              </div>
               <select 
                 className="profile-select" 
                 value={favoriteAppearance} 
@@ -148,7 +189,9 @@ const Profile: React.FC = () => {
 
         <div className="profile-input-container">
           <div className="personality-container">
-            <p>好きな性格を選択してください</p>
+            <div className="profile-input-title-div">
+              <p>好きな性格を選択</p>
+            </div>
             <div className="personality-options">
               {personalityOptions.map((personality) => (
                 <div
@@ -166,8 +209,10 @@ const Profile: React.FC = () => {
 
         <div className="profile-input-container">
           <div className="personality-container">
+            <div className="profile-input-title-div">
+              <p>好きな年代を選択</p>
+            </div>
             <label className="profile-label">
-              好きな年代:
               <select
                 className="profile-select"
                 value={favoriteAgeRange}
