@@ -153,49 +153,46 @@ const handleOpenModal = async (messageId: string) => {
   }, [countdown]);
 
   useEffect(() => {
+    // ルームに入った際にユーザー情報を追加
+    setDoc(userRef, user, { merge: true });
     modalTimer.current = setInterval(() => setIsModalOpen(true), 300000); // 5分おき
-
+    // beforeunloadイベントにリスナーを追加
+    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       if (modalTimer.current) clearInterval(modalTimer.current);
     };
   }, []);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      // ルームに入った際にユーザー情報を追加
-      setDoc(userRef, user, { merge: true });
-      setInterval(() => { setIsModalOpen(true); }, 60000); // 60000 ms = 60 seconds
-      isInitialMount.current = false;
-      // 最新10件をとるためdateでソート
-      const q = query(messagesRef, orderBy('date', 'desc'), limit(10));
-      onSnapshot(q, (snapshot: QuerySnapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            // チャットログへ追加
-            addLog(change.doc.id, change.doc.data());
-            if (change.doc.data().msg === "愛してます" && (user.name !== change.doc.data().name) && (change.doc.data().modalOpenFlag === false)) {
-              // チャットメッセージが「愛してますよ」ならモーダルを開く
-              console.log('')
-              handleOpenModal(change.doc.id);
-            }
-            // 画面最下部へスクロール
-            const doc = document.documentElement;
-            window.setTimeout(
-              () => window.scroll(0, doc.scrollHeight - doc.clientHeight),
-              100
-            );
+    const q = query(messagesRef, orderBy('date', 'desc'), limit(10));
+    
+    return onSnapshot(q, (snapshot: QuerySnapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          // 初回ロードを無視
+          if (isInitialMount.current) {
+            return;
           }
-        });
-      });
-      return
-    }
-    isInitialMount.current = false
-    // beforeunloadイベントにリスナーを追加
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.name, userRef]);
+          if (change.doc.data().msg === "愛してます" && (user.name !== change.doc.data().name) && (change.doc.data().modalOpenFlag === false)) {
+            // チャットメッセージが「愛してますよ」ならモーダルを開く
+            handleOpenModal(change.doc.id);
+          }
+
+          // 初回以降にリアルタイムで追加されるメッセージのみを表示
+          const log = {
+            key: change.doc.id,
+            ...change.doc.data()
+          } as ChatLog;
+
+          setChatLogs((prevLogs) => [...prevLogs, log]);
+        }
+      });
+
+      // 初回ロード完了後にフラグをオフにする
+      isInitialMount.current = false;
+    });
+  }, [messagesRef]);
 
   // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseModal = () => {
