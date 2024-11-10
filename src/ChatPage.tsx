@@ -8,6 +8,7 @@ import {
   collection,
   onSnapshot,
   addDoc,
+  updateDoc,
   QuerySnapshot,
   query,
   orderBy,
@@ -97,20 +98,34 @@ const ChatPage: React.FC = () => {
   /**
    * メッセージ送信
    */
-  const submitMsg = async (argMsg?: string) => {
+  const submitMsg = async (argMsg?: string, modalOpenFlag: boolean = true) => {
     const message = argMsg || inputMsg;
     if (!message) {
       return;
+    }
+
+    if (message === "愛してます") {
+      modalOpenFlag = false
     }
 
     await addDoc(messagesRef, {
       name: user.name,
       msg: message,
       date: new Date().getTime(),
+      modalOpenFlag: modalOpenFlag,
     });
 
     setInputMsg('');
   };
+
+// モーダルが開かれたら `modalOpenFlag` を `true` に更新
+const handleOpenModal = async (messageId: string) => {
+  setIsLoveConfessionModalOpen(true);
+  
+  // modalOpenFlag を true に更新
+  const messageDoc = doc(messagesRef, messageId);
+  await updateDoc(messageDoc, { modalOpenFlag: true });
+};
 
   const handleBeforeUnload = (event: BeforeUnloadEvent) => {
     deleteDoc(userRef);
@@ -158,9 +173,10 @@ const ChatPage: React.FC = () => {
           if (change.type === 'added') {
             // チャットログへ追加
             addLog(change.doc.id, change.doc.data());
-            if (change.doc.data().msg === "愛してますよ") {
+            if (change.doc.data().msg === "愛してます" && (user.name !== change.doc.data().name) && (change.doc.data().modalOpenFlag === false)) {
               // チャットメッセージが「愛してますよ」ならモーダルを開く
-              setIsLoveConfessionModalOpen(true);
+              console.log('')
+              handleOpenModal(change.doc.id);
             }
             // 画面最下部へスクロール
             const doc = document.documentElement;
@@ -173,6 +189,7 @@ const ChatPage: React.FC = () => {
       });
       return
     }
+    isInitialMount.current = false
     // beforeunloadイベントにリスナーを追加
     window.addEventListener('beforeunload', handleBeforeUnload);
     return
@@ -183,7 +200,7 @@ const ChatPage: React.FC = () => {
   // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    submitMsg("愛してます"); // チャットに「愛してます」を送信
+    submitMsg("愛してます", false); // チャットに「愛してます」を送信
     setCountdown(10);
   };
 
