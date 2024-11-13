@@ -24,6 +24,7 @@ type User = {
 const ChatRoomList: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const gender = JSON.parse(localStorage.getItem('lovyu-user') || '{}').gender;
   const targetGender = JSON.parse(localStorage.getItem('lovyu-user') || '{}').targetGender;
 
   useEffect(() => {
@@ -67,9 +68,9 @@ const ChatRoomList: React.FC = () => {
     );
   }
 
-  const isRoomAvailable = (userCount:number, userGenger?:string) => {
+  const isRoomAvailable = (userCount:number, userGenger?:string, userTargetGenger?:string) => {
     if (userCount === 0) return true
-    if (userCount === 1 && (userGenger === targetGender)) return true
+    if (userCount === 1 && (userGenger === targetGender) && (userTargetGenger === gender)) return true
     return false
   }
 
@@ -81,7 +82,7 @@ const ChatRoomList: React.FC = () => {
 
           return (
             <div key={room.id} className={`room-link ${room.userCount >= 2  ? 'room-full' : ''}`}>
-              {isRoomAvailable(room.userCount, room.users[0]?.gender) ? (
+              {isRoomAvailable(room.userCount, room.users[0]?.gender, room.users[0]?.targetGender) ? (
                 <Link to={`/chat/${room.id}`} className="room-button">
                   Room {room.id} ({room.userCount} 人)
                   {room.userCount === 1 && room.matchingRate && (
