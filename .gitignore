@@ -14,3 +14,8 @@ build/static/js/main.634c96c9.js
 build/static/js/main.634c96c9.js.LICENSE.txt
 build/static/js/main.634c96c9.js.map
 repopack-output.txt
+/functions/node_modules/
+/functions/venv/
+firebase-debug.log
+ui-debug.log
+main.cpython-312.pyc
