@@ -83,20 +83,6 @@ const ChatPage: React.FC = () => {
   };
 
   /**
-   * チャットログに追加
-   */
-  const addLog = (id: string, data: any) => {
-    const log = {
-      key: id,
-      ...data,
-    };
-    // Firestoreから取得したデータは時間降順のため、表示前に昇順に並び替える
-    setChatLogs((prev) =>
-      [...prev, log].sort((a, b) => a.date.valueOf() - b.date.valueOf())
-    );
-  };
-
-  /**
    * メッセージ送信
    */
   const submitMsg = async (argMsg?: string, modalOpenFlag: boolean = true) => {
@@ -122,19 +108,7 @@ const ChatPage: React.FC = () => {
     setInputMsg('');
   };
 
-// モーダルが開かれたら `modalOpenFlag` を `true` に更新
-const handleOpenModal = async (messageId: string) => {
-  setIsLoveConfessionModalOpen(true);
-  
-  // modalOpenFlag を true に更新
-  const messageDoc = doc(messagesRef, messageId);
-  await updateDoc(messageDoc, { modalOpenFlag: true });
-};
 
-  const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-    deleteDoc(userRef);
-    event.preventDefault();
-  };
 
   useEffect(() => {
     if (isModalOpen) {
@@ -157,6 +131,10 @@ const handleOpenModal = async (messageId: string) => {
   }, [countdown]);
 
   useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      deleteDoc(userRef);
+      event.preventDefault();
+    };
     // ルームに入った際にユーザー情報を追加
     setDoc(userRef, { ...user, lastUpdated: serverTimestamp() }, { merge: true });
     modalTimer.current = setInterval(() => setIsModalOpen(true), 300000); // 5分おき
@@ -165,9 +143,19 @@ const handleOpenModal = async (messageId: string) => {
     return () => {
       if (modalTimer.current) clearInterval(modalTimer.current);
     };
-  }, []);
+  }, [user, userRef]);
 
   useEffect(() => {
+
+    // モーダルが開かれたら `modalOpenFlag` を `true` に更新
+    const handleOpenModal = async (messageId: string) => {
+      setIsLoveConfessionModalOpen(true);
+      
+      // modalOpenFlag を true に更新
+      const messageDoc = doc(messagesRef, messageId);
+      await updateDoc(messageDoc, { modalOpenFlag: true });
+    };
+
     const q = query(messagesRef, orderBy('date', 'desc'), limit(10));
     
     return onSnapshot(q, (snapshot: QuerySnapshot) => {
@@ -196,7 +184,7 @@ const handleOpenModal = async (messageId: string) => {
       // 初回ロード完了後にフラグをオフにする
       isInitialMount.current = false;
     });
-  }, [messagesRef]);
+  }, [messagesRef, user.name]);
 
   // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseModal = () => {
