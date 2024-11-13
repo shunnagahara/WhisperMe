@@ -13,6 +13,7 @@ import {
   query,
   orderBy,
   limit,
+  serverTimestamp,
 } from 'firebase/firestore';
 import NameIcon from './NameIcon';
 import Modal from './Modal'; // モーダルコンポーネントをインポート
@@ -115,6 +116,9 @@ const ChatPage: React.FC = () => {
       modalOpenFlag: modalOpenFlag,
     });
 
+    // ユーザーのlastUpdatedフィールドを更新
+    await updateDoc(userRef, { lastUpdated: serverTimestamp() });
+
     setInputMsg('');
   };
 
@@ -154,7 +158,7 @@ const handleOpenModal = async (messageId: string) => {
 
   useEffect(() => {
     // ルームに入った際にユーザー情報を追加
-    setDoc(userRef, user, { merge: true });
+    setDoc(userRef, { ...user, lastUpdated: serverTimestamp() }, { merge: true });
     modalTimer.current = setInterval(() => setIsModalOpen(true), 300000); // 5分おき
     // beforeunloadイベントにリスナーを追加
     window.addEventListener('beforeunload', handleBeforeUnload);
