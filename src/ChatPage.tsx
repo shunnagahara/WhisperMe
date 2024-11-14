@@ -30,9 +30,12 @@ type ChatLog = {
 type User = {
   name: string;
   gender: string;
+  ageRange: string;
+  personalities: Record<number, string>;
+  appearance: string;
   targetGender: string;
   favoriteAppearance: string;
-  selectedPersonalities: Object;
+  selectedPersonalities: Record<number, string>;
   favoriteAgeRange: string;
 };
 
@@ -44,6 +47,9 @@ const fetchUser = (): User => {
   return {
     name: user.name,
     gender: user.gender,
+    ageRange: user.ageRange,
+    personalities: user.personalities,
+    appearance: user.appearance,
     targetGender: user.targetGender,
     favoriteAppearance: user.favoriteAppearance,
     selectedPersonalities: user.selectedPersonalities,

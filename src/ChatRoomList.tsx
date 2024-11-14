@@ -14,6 +14,9 @@ interface RoomInfo {
 type User = {
   name: string;
   gender: string;
+  ageRange: string;
+  personalities: Record<number, string>;
+  appearance: string;
   targetGender: string;
   favoriteAppearance: string;
   selectedPersonalities: Record<number, string>;
@@ -78,7 +81,7 @@ const ChatRoomList: React.FC = () => {
     });
 
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
-  }, []);
+  }, [storedUser]);
 
   if (isLoading) {
     return (
