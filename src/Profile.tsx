@@ -3,6 +3,7 @@ import { ReactComponent as MaleIcon } from './icons/male.svg'; // 男性アイ�
 import { ReactComponent as FemaleIcon } from './icons/female.svg'; // 女性アイコンのSVG
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
+import ProgressBar from './ProgressBar';
 import './Modal.css';
 import './Profile.css';
 
@@ -16,6 +17,7 @@ const Profile: React.FC = () => {
   const [favoriteAppearance, setFavoriteAppearance] = useState('');
   const [selectedPersonalities, setSelectedPersonalities] = useState<string[]>([]);
   const [favoriteAgeRange, setFavoriteAgeRange] = useState('');
+  const [progress, setProgress] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -68,6 +70,21 @@ const Profile: React.FC = () => {
     }
   }, []);
 
+ // 各項目が入力されたかを確認し、進捗率を計算
+ useEffect(() => {
+    const totalItems = 6;
+    let completedItems = 0;
+
+    if (name) completedItems++;
+    if (gender) completedItems++;
+    if (targetGender) completedItems++;
+    if (favoriteAppearance) completedItems++;
+    if (Object.keys(selectedPersonalities).length > 0) completedItems++;
+    if (favoriteAgeRange) completedItems++;
+
+    setProgress(Math.floor((completedItems / totalItems) * 100));
+  }, [name, gender, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange]);
+
   const handleModalClose = (navigateToChat: boolean) => {
     setShowModal(false);
     if (navigateToChat) {
@@ -89,7 +106,8 @@ const Profile: React.FC = () => {
       </Modal>
 
       <div className="profile-card">
-        <h1>プロフィール登録</h1>
+        {/* <h1>プロフィール登録</h1> */}
+        <ProgressBar progress={progress} />
 
         <div className="profile-input-container">
           <input
@@ -205,27 +223,6 @@ const Profile: React.FC = () => {
             {errors.selectedPersonalities && <p className="error-text">{errors.selectedPersonalities}</p>}
           </div>
         </div>
-
-        {/* <div className="profile-input-container">
-          <div className="personality-container">
-            <div className="profile-input-title-div">
-              <p>好きな年代を選択</p>
-            </div>
-            <label className="profile-label">
-              <select
-                className="profile-select"
-                value={favoriteAgeRange}
-                onChange={(e) => setFavoriteAgeRange(e.target.value)}
-              >
-                <option value="">選択してください</option>
-                {ageRangeOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-              {errors.favoriteAgeRange && <p className="error-text">{errors.favoriteAgeRange}</p>}
-            </label>
-          </div>
-        </div> */}
 
         <div className="profile-input-container">
           <div className="personality-container">

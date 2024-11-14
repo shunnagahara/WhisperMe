@@ -168,6 +168,34 @@
     margin-bottom: 20px;
   }
 
+  .progress-bar {
+    width: 100%;
+    height: 20px; /* 高さを少し増やしてパーセント表示が見やすく */
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    transition: width 0.3s ease, background-color 0.3s ease; /* 色の変化もアニメーション */
+  }
+
+  .progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+  }
+
   /* モバイル対応 */
   @media (max-width: 480px) {
     .profile-card {
