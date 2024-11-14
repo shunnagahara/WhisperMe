@@ -16,16 +16,37 @@ type User = {
   gender: string;
   targetGender: string;
   favoriteAppearance: string;
-  selectedPersonalities: Object;
+  selectedPersonalities: Record<number, string>;
   favoriteAgeRange: string;
+};
+
+const calculateMatchingRate = (user: User, storedUser: User): number => {
+  let matchCount = 0;
+  let totalAttributes = 0;
+
+  if (user.favoriteAppearance === storedUser.favoriteAppearance) matchCount++;
+  totalAttributes++;
+
+  if (user.favoriteAgeRange === storedUser.favoriteAgeRange) matchCount++;
+  totalAttributes++;
+
+  // `selectedPersonalities`オブジェクトの比較
+  for (const key in user.selectedPersonalities) {
+    if (user.selectedPersonalities[key] === storedUser.selectedPersonalities[key]) {
+      matchCount++;
+    }
+    totalAttributes++;
+  }
+
+  // 一致率をパーセンテージで返す
+  return Math.floor((matchCount / totalAttributes) * 100);
 };
 
 
 const ChatRoomList: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const gender = JSON.parse(localStorage.getItem('lovyu-user') || '{}').gender;
-  const targetGender = JSON.parse(localStorage.getItem('lovyu-user') || '{}').targetGender;
+  const storedUser = JSON.parse(localStorage.getItem('lovyu-user') || '{}') as User
 
   useEffect(() => {
     const roomNames = ['1', '2', '3', '4', '5', '6'];
@@ -42,7 +63,7 @@ const ChatRoomList: React.FC = () => {
 
         setRooms((prevRooms) => {
           const userCount = snapshot.size;
-          const matchingRate = userCount === 1 ? Math.floor(Math.random() * 100) : undefined;
+          const matchingRate = userCount === 1 && users[0] ? calculateMatchingRate(users[0], storedUser) : undefined;
           const newRoomData = {
             id: roomId,
             userCount,
@@ -70,7 +91,7 @@ const ChatRoomList: React.FC = () => {
 
   const isRoomAvailable = (userCount:number, userGenger?:string, userTargetGenger?:string) => {
     if (userCount === 0) return true
-    if (userCount === 1 && (userGenger === targetGender) && (userTargetGenger === gender)) return true
+    if (userCount === 1 && (userGenger === storedUser.targetGender) && (userTargetGenger === storedUser.gender)) return true
     return false
   }
 
