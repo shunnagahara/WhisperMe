@@ -1,5 +1,5 @@
 import { FC, Suspense } from 'react';
-import iconMaker, { IconOption } from './iconMaker';
+import iconMaker, { IconOption } from './../iconMaker';
 
 /**
  * Suspenseを使い、Canvasで生成した画像を表示するコンポーネント
