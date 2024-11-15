@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import ChatPage from './pages/ChatPage';
-import Profile from './pages/Profile';
-import ChatRoomList from './pages/ChatRoomList';
+import ChatPage from './ChatPage';
+import Profile from './Profile';
+import ChatRoomList from './ChatRoomList';
 
 const App = () => (
   <div className="App">
