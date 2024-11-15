@@ -6,6 +6,7 @@ import NameIcon from './../components/NameIcon';
 import Modal from './../components/Modal';
 import { ChatLog } from './../constants/types/chatLog';
 import { fetchUserFromWebStorage } from './../repository/webstorage/user'
+import { handleBeforeUnload, handleCountdown } from '../service/model/chatPageService';
 import './../css/ChatPage.css';
 import './../css/Modal.css';
 
@@ -69,17 +70,8 @@ const ChatPage: React.FC = () => {
 
 
   useEffect(() => {
-    if (isModalOpen) {
-      countdownTimer.current = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-    } else {
-      if (countdownTimer.current) clearInterval(countdownTimer.current);
-    }
-
-    return () => {
-      if (countdownTimer.current) clearInterval(countdownTimer.current);
-    };
+    const cleanup = handleCountdown(isModalOpen, countdownTimer, setCountdown);
+    return cleanup; // クリーンアップ関数を実行
   }, [isModalOpen]);  
 
   useEffect(() => {
@@ -89,15 +81,11 @@ const ChatPage: React.FC = () => {
   }, [countdown]);
 
   useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      deleteDoc(userRef);
-      event.preventDefault();
-    };
+    const unloadListener = handleBeforeUnload(userRef);
+    window.addEventListener("beforeunload", unloadListener);
     // ルームに入った際にユーザー情報を追加
     setDoc(userRef, { ...user, lastUpdated: serverTimestamp() }, { merge: true });
-    modalTimer.current = setInterval(() => setIsModalOpen(true), 300000); // 5分おき
-    // beforeunloadイベントにリスナーを追加
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    modalTimer.current = setInterval(() => setIsModalOpen(true), 30000); // 5分おき
     return () => {
       if (modalTimer.current) clearInterval(modalTimer.current);
     };
