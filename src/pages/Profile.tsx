@@ -6,8 +6,8 @@ import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppea
 import { User } from './../constants/types/user'
 import Modal from './../components/Modal';
 import { isUserDataComplete, handleNext, handleModalClose } from './../service/presentation/profileService'
+import { calculateProgress } from './../service/model/profileService'
 import ProgressBar from './../components/ProgressBar';
-import './../css/Modal.css';
 import './../css/Profile.css';
 
 const Profile: React.FC = () => {
@@ -27,6 +27,7 @@ const Profile: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const navigate = useNavigate();
 
   const updateProfile = (key: keyof User, value: any) => {
     setProfile((prevProfile) => ({
@@ -37,31 +38,16 @@ const Profile: React.FC = () => {
     }));
   };
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     if (isUserDataComplete()) {
       setShowModal(true); // Show modal if user data is complete
     }
   }, []);
 
- // 各項目が入力されたかを確認し、進捗率を計算
- useEffect(() => {
-    const totalItems = 9;
-    let completedItems = 0;
-
-    if (profile.name) completedItems++;
-    if (profile.gender) completedItems++;
-    if (profile.ageRange) completedItems++;
-    if (Object.keys(profile.personalities).length > 0) completedItems++;
-    if (profile.appearance) completedItems++;
-    if (profile.targetGender) completedItems++;
-    if (profile.favoriteAppearance) completedItems++;
-    if (Object.keys(profile.selectedPersonalities).length > 0) completedItems++;
-    if (profile.favoriteAgeRange) completedItems++;
-
-    setProgress(Math.floor((completedItems / totalItems) * 100));
-  }, [profile.name, profile.gender, profile.ageRange, profile.personalities, profile.appearance, profile.targetGender, profile.favoriteAppearance, profile.selectedPersonalities, profile.favoriteAgeRange]);
+  useEffect(() => {
+    const progressValue = calculateProgress(profile); // 外部関数を利用
+    setProgress(progressValue);
+  }, [profile]);
 
   return (
     <div className="profile-container">
