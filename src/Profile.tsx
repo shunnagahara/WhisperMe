@@ -3,39 +3,53 @@ import { ReactComponent as MaleIcon } from './icons/male.svg';
 import { ReactComponent as FemaleIcon } from './icons/female.svg';
 import { useNavigate } from 'react-router-dom';
 import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './constants/common';
+import { User } from './constants/types/user'
 import Modal from './Modal';
 import ProgressBar from './ProgressBar';
 import './css/Modal.css';
 import './css/Profile.css';
 
 const Profile: React.FC = () => {
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [ageRange, setAgeRange] = useState('');
-  const [personalities, setPersonalities] = useState<string[]>([]);
-  const [appearance, setAppearance] = useState('');
-  const [targetGender, setTargetGender] = useState('');
-  const [favoriteAppearance, setFavoriteAppearance] = useState('');
-  const [selectedPersonalities, setSelectedPersonalities] = useState<string[]>([]);
-  const [favoriteAgeRange, setFavoriteAgeRange] = useState('');
+
+  const [profile, setProfile] = useState<User>({
+    name: '',
+    gender: '',
+    ageRange: '',
+    personalities: [],
+    appearance: '',
+    targetGender: '',
+    favoriteAppearance: '',
+    selectedPersonalities: [],
+    favoriteAgeRange: ''
+  });
+
   const [progress, setProgress] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const updateProfile = (key: keyof User, value: any) => {
+    setProfile((prevProfile) => ({
+        ...prevProfile,
+        [key]: Array.isArray(prevProfile[key])
+            ? [...(prevProfile[key] as string[]), value]
+            : value,
+    }));
+  };
 
   const navigate = useNavigate();
 
   const validateInputs = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!name.trim()) newErrors.name = '名前を入力してください。';
-    if (!gender) newErrors.gender = '性別を選択してください。';
-    if (!ageRange) newErrors.gender = '年代を選択してください。';
-    if (personalities.length === 0) newErrors.personalities = '性格を選択してください。';
-    if (gender && !appearance) newErrors.appearance = '見ためを選択してください。';
-    if (!targetGender) newErrors.targetGender = '相手の性別を選択してください。';
-    if (!favoriteAgeRange) newErrors.favoriteAgeRange = '好きな年代を選択してください。';
-    if (selectedPersonalities.length === 0) newErrors.selectedPersonalities = '好きな性格を選択してください。';
-    if (gender && !favoriteAppearance) newErrors.favoriteAppearance = '好きな見ためを選択してください。';
+    if (!profile.name.trim()) newErrors.name = '名前を入力してください。';
+    if (!profile.gender) newErrors.gender = '性別を選択してください。';
+    if (!profile.ageRange) newErrors.gender = '年代を選択してください。';
+    if (Object.keys(profile.personalities).length === 0) newErrors.personalities = '性格を選択してください。';
+    if (profile.gender && !profile.appearance) newErrors.appearance = '見ためを選択してください。';
+    if (!profile.targetGender) newErrors.targetGender = '相手の性別を選択してください。';
+    if (!profile.favoriteAgeRange) newErrors.favoriteAgeRange = '好きな年代を選択してください。';
+    if (Object.keys(profile.selectedPersonalities).length === 0) newErrors.selectedPersonalities = '好きな性格を選択してください。';
+    if (profile.gender && !profile.favoriteAppearance) newErrors.favoriteAppearance = '好きな見ためを選択してください。';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -52,17 +66,9 @@ const Profile: React.FC = () => {
 
   const handleNext = () => {
     if (validateInputs()) {
-      const userData = { name, gender, ageRange, personalities, appearance, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange };
-      localStorage.setItem('lovyu-user', JSON.stringify(userData));
+      localStorage.setItem('lovyu-user', JSON.stringify(profile));
       navigate('/list');
     }
-  };
-
-  const togglePersonality = (personality: string, isMyself: boolean) => {
-    if (isMyself) return setPersonalities((prev) => prev.includes(personality) ? prev.filter((p) => p !== personality) : [...prev, personality]);
-    setSelectedPersonalities((prev) =>
-      prev.includes(personality) ? prev.filter((p) => p !== personality) : [...prev, personality]
-    );
   };
 
   useEffect(() => {
@@ -76,18 +82,18 @@ const Profile: React.FC = () => {
     const totalItems = 9;
     let completedItems = 0;
 
-    if (name) completedItems++;
-    if (gender) completedItems++;
-    if (ageRange) completedItems++;
-    if (Object.keys(personalities).length > 0) completedItems++;
-    if (appearance) completedItems++;
-    if (targetGender) completedItems++;
-    if (favoriteAppearance) completedItems++;
-    if (Object.keys(selectedPersonalities).length > 0) completedItems++;
-    if (favoriteAgeRange) completedItems++;
+    if (profile.name) completedItems++;
+    if (profile.gender) completedItems++;
+    if (profile.ageRange) completedItems++;
+    if (Object.keys(profile.personalities).length > 0) completedItems++;
+    if (profile.appearance) completedItems++;
+    if (profile.targetGender) completedItems++;
+    if (profile.favoriteAppearance) completedItems++;
+    if (Object.keys(profile.selectedPersonalities).length > 0) completedItems++;
+    if (profile.favoriteAgeRange) completedItems++;
 
     setProgress(Math.floor((completedItems / totalItems) * 100));
-  }, [name, gender, ageRange, personalities, appearance, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange]);
+  }, [profile.name, profile.gender, profile.ageRange, profile.personalities, profile.appearance, profile.targetGender, profile.favoriteAppearance, profile.selectedPersonalities, profile.favoriteAgeRange]);
 
   const handleModalClose = (navigateToChat: boolean) => {
     setShowModal(false);
@@ -114,8 +120,8 @@ const Profile: React.FC = () => {
         <div className="profile-input-container">
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={profile.name}
+            onChange={(e) => updateProfile("name", e.target.value)}
             placeholder="あなたの名前"
             className="profile-input"
           />
@@ -132,22 +138,22 @@ const Profile: React.FC = () => {
                 type="radio"
                 name="gender"
                 value="male"
-                checked={gender === 'male'}
-                onChange={() => setGender('male')}
+                checked={profile.gender === 'male'}
+                onChange={() => updateProfile("gender", 'male')}
                 className="hidden-radio"
               />
-              <MaleIcon className={`icon ${gender === 'male' ? 'selected' : ''}`} />
+              <MaleIcon className={`icon ${profile.gender === 'male' ? 'selected' : ''}`} />
             </label>
             <label>
               <input
                 type="radio"
                 name="gender"
                 value="female"
-                checked={gender === 'female'}
-                onChange={() => setGender('female')}
+                checked={profile.gender === 'female'}
+                onChange={() => updateProfile("gender", 'female')}
                 className="hidden-radio"
               />
-              <FemaleIcon className={`icon ${gender === 'female' ? 'selected' : ''}`} />
+              <FemaleIcon className={`icon ${profile.gender === 'female' ? 'selected' : ''}`} />
             </label>
           </div>
           {errors.gender && <p className="error-text">{errors.gender}</p>}
@@ -162,8 +168,8 @@ const Profile: React.FC = () => {
               {ageRangeOptions.map((ageGroup) => (
                 <div
                   key={ageGroup}
-                  className={`personality-tag ${ageRange === ageGroup ? 'selected' : ''}`}
-                  onClick={() => setAgeRange(ageGroup)}
+                  className={`personality-tag ${profile.ageRange === ageGroup ? 'selected' : ''}`}
+                  onClick={() => updateProfile('ageRange', ageGroup)}
                 >
                   {ageGroup}
                 </div>
@@ -182,8 +188,8 @@ const Profile: React.FC = () => {
               {personalityOptions.map((personality) => (
                 <div
                   key={personality}
-                  className={`personality-tag ${personalities.includes(personality) ? 'selected' : ''}`}
-                  onClick={() => togglePersonality(personality, true)}
+                  className={`personality-tag ${Array.isArray(profile.personalities) && profile.personalities.includes(personality) ? 'selected' : ''}`}
+                  onClick={() => updateProfile('personalities', personality)}
                 >
                   {personality}
                 </div>
@@ -194,17 +200,17 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="profile-input-container">
-          {gender && (
+          {profile.gender && (
             <div className="personality-container">
               <div className="profile-input-title-div">
-                <p>好きな見ためを選択してください</p>
+                <p>見ためを選択してください</p>
               </div>
               <div className="personality-options">
-                {(gender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map((myAppearance) => (
+                {(profile.gender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map((myAppearance) => (
                   <div
                     key={myAppearance}
-                    className={`personality-tag ${appearance === myAppearance ? 'selected' : ''}`}
-                    onClick={() => setAppearance(myAppearance)}
+                    className={`personality-tag ${profile.appearance === myAppearance ? 'selected' : ''}`}
+                    onClick={() => updateProfile('appearance', myAppearance)}
                   >
                     {myAppearance}
                   </div>
@@ -225,22 +231,22 @@ const Profile: React.FC = () => {
                 type="radio"
                 name="targetGender"
                 value="male"
-                checked={targetGender === 'male'}
-                onChange={() => setTargetGender('male')}
+                checked={profile.targetGender === 'male'}
+                onChange={() => updateProfile('targetGender', 'male')}
                 className="hidden-radio"
               />
-              <MaleIcon className={`icon ${targetGender === 'male' ? 'selected' : ''}`} />
+              <MaleIcon className={`icon ${profile.targetGender === 'male' ? 'selected' : ''}`} />
             </label>
             <label>
               <input
                 type="radio"
                 name="targetGender"
                 value="female"
-                checked={targetGender === 'female'}
-                onChange={() => setTargetGender('female')}
+                checked={profile.targetGender === 'female'}
+                onChange={() => updateProfile('targetGender', 'female')}
                 className="hidden-radio"
               />
-              <FemaleIcon className={`icon ${targetGender === 'female' ? 'selected' : ''}`} />
+              <FemaleIcon className={`icon ${profile.targetGender === 'female' ? 'selected' : ''}`} />
             </label>
           </div>
           {errors.targetGender && <p className="error-text">{errors.targetGender}</p>}
@@ -255,8 +261,8 @@ const Profile: React.FC = () => {
               {ageRangeOptions.map((ageGroup) => (
                 <div
                   key={ageGroup}
-                  className={`personality-tag ${favoriteAgeRange === ageGroup ? 'selected' : ''}`}
-                  onClick={() => setFavoriteAgeRange(ageGroup)}
+                  className={`personality-tag ${profile.favoriteAgeRange === ageGroup ? 'selected' : ''}`}
+                  onClick={() => updateProfile('favoriteAgeRange', ageGroup)}
                 >
                   {ageGroup}
                 </div>
@@ -267,17 +273,17 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="profile-input-container">
-          {targetGender && (
+          {profile.targetGender && (
             <div className="personality-container">
               <div className="profile-input-title-div">
                 <p>好きな見ためを選択してください</p>
               </div>
               <div className="personality-options">
-                {(targetGender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map((appearance) => (
+                {(profile.targetGender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map((appearance) => (
                   <div
                     key={appearance}
-                    className={`personality-tag ${favoriteAppearance === appearance ? 'selected' : ''}`}
-                    onClick={() => setFavoriteAppearance(appearance)}
+                    className={`personality-tag ${profile.favoriteAppearance === appearance ? 'selected' : ''}`}
+                    onClick={() => updateProfile('favoriteAppearance', appearance)}
                   >
                     {appearance}
                   </div>
@@ -297,8 +303,8 @@ const Profile: React.FC = () => {
               {personalityOptions.map((personality) => (
                 <div
                   key={personality}
-                  className={`personality-tag ${selectedPersonalities.includes(personality) ? 'selected' : ''}`}
-                  onClick={() => togglePersonality(personality, false)}
+                  className={`personality-tag ${Array.isArray(profile.selectedPersonalities) && profile.selectedPersonalities.includes(personality) ? 'selected' : ''}`}
+                  onClick={() => updateProfile('selectedPersonalities', personality)}
                 >
                   {personality}
                 </div>
