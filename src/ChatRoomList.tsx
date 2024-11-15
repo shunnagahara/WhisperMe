@@ -27,15 +27,15 @@ const calculateMatchingRate = (user: User, storedUser: User): number => {
   let matchCount = 0;
   let totalAttributes = 0;
 
-  if (user.favoriteAppearance === storedUser.favoriteAppearance) matchCount++;
+  if (user.appearance === storedUser.favoriteAppearance) matchCount++;
   totalAttributes++;
 
-  if (user.favoriteAgeRange === storedUser.favoriteAgeRange) matchCount++;
+  if (user.ageRange === storedUser.favoriteAgeRange) matchCount++;
   totalAttributes++;
 
   // `selectedPersonalities`オブジェクトの比較
-  for (const key in user.selectedPersonalities) {
-    if (user.selectedPersonalities[key] === storedUser.selectedPersonalities[key]) {
+  for (const key in user.personalities) {
+    if (user.personalities[key] === storedUser.selectedPersonalities[key]) {
       matchCount++;
     }
     totalAttributes++;
@@ -81,7 +81,8 @@ const ChatRoomList: React.FC = () => {
     });
 
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
-  }, [storedUser]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (
