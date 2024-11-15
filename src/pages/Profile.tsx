@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as MaleIcon } from './../icons/male.svg';
-import { ReactComponent as FemaleIcon } from './../icons/female.svg';
+import { ReactComponent as MaleIcon } from './../assets/icons/male.svg';
+import { ReactComponent as FemaleIcon } from './../assets/icons/female.svg';
 import { useNavigate } from 'react-router-dom';
 import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './../constants/common';
 import { User } from './../constants/types/user'

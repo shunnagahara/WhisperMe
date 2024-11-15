@@ -1,20 +1,5 @@
-/**
- * 名前アイコン作成
- * ・スペースで区切った先頭2文字で丸アイコンを作成する
- * ・「日本 太郎」=>「日太」
- * ・「Mike Davis」=>「MD」
- */
+import { IconOption } from './../../constants/types/iconOption'
 
-// Icon作成オプション
-export type IconOption = {
-  size?: number; // iconのサイズ
-  foreColor?: string; // フォントの色
-  backColor?: string; // 背景色
-  fontScale?: number; // フォントのサイズ(iconのサイズに対する比率(0.7程度が適当))
-  fontFamily?: string; // フォントの種類
-};
-
-// Icon作成デフォルト値
 const defaultValue: IconOption = {
   size: 50,
   foreColor: '#3c665f',
@@ -29,7 +14,7 @@ const defaultValue: IconOption = {
  * @param option IconOption
  * @returns
  */
-const iconMaker = async (
+const iconMakerService = async (
   name: string,
   option?: IconOption
 ): Promise<string> => {
@@ -89,4 +74,4 @@ const iconMaker = async (
   return imageUrl;
 };
 
-export default iconMaker;
+export default iconMakerService;

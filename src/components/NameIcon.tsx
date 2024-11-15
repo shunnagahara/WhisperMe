@@ -1,5 +1,6 @@
 import { FC, Suspense } from 'react';
-import iconMaker, { IconOption } from './../iconMaker';
+import iconMakerService from './../service/model/iconMakerService';
+import { IconOption } from './../constants/types/iconOption';
 
 /**
  * Suspenseを使い、Canvasで生成した画像を表示するコンポーネント
@@ -13,7 +14,7 @@ const IconMaker: IconMakerFC = ({ userName, option }) => {
   const iconMakerWrapper = () => {
     if (!iconImage[userName]) {
       // eslint-disable-next-line no-return-assign
-      throw iconMaker(userName, option).then((r) => (iconImage[userName] = r));
+      throw iconMakerService(userName, option).then((r) => (iconImage[userName] = r));
     } else {
       return iconImage[userName];
     }
