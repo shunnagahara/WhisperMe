@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as MaleIcon } from './icons/male.svg'; // 男性アイコンのSVG
-import { ReactComponent as FemaleIcon } from './icons/female.svg'; // 女性アイコンのSVG
+import { ReactComponent as MaleIcon } from './icons/male.svg';
+import { ReactComponent as FemaleIcon } from './icons/female.svg';
 import { useNavigate } from 'react-router-dom';
+import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './constants/common';
 import Modal from './Modal';
 import ProgressBar from './ProgressBar';
 import './css/Modal.css';
 import './css/Profile.css';
-
-const personalityOptions = ["やさしい", "オラオラ", "しずか", "おもしろい"];
-const ageRangeOptions = ["18 - 25", "25 - 30", "30 - 40", "40 - 50", "50 - 60"];
 
 const Profile: React.FC = () => {
   const [name, setName] = useState('');
@@ -23,10 +21,6 @@ const Profile: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  // 男性・女性による「好きな外見」の選択肢
-  const maleAppearanceOptions = ['爽やか系', 'ワイルド系', '韓国系'];
-  const femaleAppearanceOptions = ['かわいい系', 'キレイ系', 'かわキレイ系'];
 
   const navigate = useNavigate();
 

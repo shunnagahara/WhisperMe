@@ -2,26 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { db } from './firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
+import { User } from './constants/types/user';
+import { RoomInfo } from './constants/types/roomInfo';
 import './css/ChatRoomList.css';
-
-interface RoomInfo {
-  id: string;
-  userCount: number;
-  matchingRate?: number;
-  users?: Array<User>;
-}
-
-type User = {
-  name: string;
-  gender: string;
-  ageRange: string;
-  personalities: Record<number, string>;
-  appearance: string;
-  targetGender: string;
-  favoriteAppearance: string;
-  selectedPersonalities: Record<number, string>;
-  favoriteAgeRange: string;
-};
 
 const calculateMatchingRate = (user: User, storedUser: User): number => {
   let matchCount = 0;
