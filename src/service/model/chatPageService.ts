@@ -1,5 +1,5 @@
-import { DocumentReference, deleteDoc } from "firebase/firestore";
-
+import { DocumentReference, deleteDoc, doc, updateDoc, CollectionReference, onSnapshot, query, orderBy, limit, QuerySnapshot  } from "firebase/firestore";
+import { ChatLog } from "../../constants/types/chatLog";
 /**
  * BeforeUnloadイベントでFirestoreのユーザー情報を削除する
  * @param userRef Firestoreのユーザードキュメント参照
@@ -40,4 +40,77 @@ export const handleCountdown = (
       clearInterval(countdownTimer.current);
     }
   };
+};
+
+/**
+ * モーダルを開き、`modalOpenFlag`を更新する関数
+ * @param messagesRef Firestoreのメッセージコレクション参照
+ * @param messageId 更新するメッセージのID
+ * @param setIsLoveConfessionModalOpen モーダルの状態を更新する関数
+ */
+export const handleOpenModal = async (
+  messagesRef: CollectionReference,
+  messageId: string,
+  setIsLoveConfessionModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+): Promise<void> => {
+  try {
+    // モーダルを開く
+    setIsLoveConfessionModalOpen(true);
+
+    // `modalOpenFlag` を `true` に更新
+    const messageDoc = doc(messagesRef, messageId);
+    await updateDoc(messageDoc, { modalOpenFlag: true });
+  } catch (error) {
+    console.error("Failed to open modal and update modalOpenFlag:", error);
+  }
+};
+
+/**
+ * チャットメッセージを取得し、更新処理を行う
+ * @param messagesRef Firestoreのメッセージコレクション参照
+ * @param setChatLogs チャットログの更新関数
+ * @param setIsLoveConfessionModalOpen モーダルの状態を更新する関数
+ * @param userName 現在のユーザー名
+ * @param isInitialMount 初回マウントのフラグ
+ */
+export const fetchChatMessages = (
+  messagesRef: CollectionReference,
+  setChatLogs: React.Dispatch<React.SetStateAction<ChatLog[]>>,
+  setIsLoveConfessionModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  userName: string,
+  isInitialMount: React.MutableRefObject<boolean>
+) => {
+  const q = query(messagesRef, orderBy("date", "desc"), limit(10));
+
+  return onSnapshot(q, (snapshot: QuerySnapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added") {
+        // 初回ロードを無視
+        if (isInitialMount.current) {
+          return;
+        }
+
+        const data = change.doc.data();
+        if (
+          data.msg === "愛してます" &&
+          userName !== data.name &&
+          data.modalOpenFlag === false
+        ) {
+          // モーダルを開く処理を呼び出し
+          handleOpenModal(messagesRef, change.doc.id, setIsLoveConfessionModalOpen);
+        }
+
+        // 初回以降にリアルタイムで追加されるメッセージのみを表示
+        const log = {
+          key: change.doc.id,
+          ...data,
+        } as ChatLog;
+
+        setChatLogs((prevLogs) => [...prevLogs, log]);
+      }
+    });
+
+    // 初回ロード完了後にフラグをオフにする
+    isInitialMount.current = false;
+  });
 };

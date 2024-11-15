@@ -6,7 +6,7 @@ import NameIcon from './../components/NameIcon';
 import Modal from './../components/Modal';
 import { ChatLog } from './../constants/types/chatLog';
 import { fetchUserFromWebStorage } from './../repository/webstorage/user'
-import { handleBeforeUnload, handleCountdown } from '../service/model/chatPageService';
+import { handleBeforeUnload, handleCountdown, fetchChatMessages } from '../service/model/chatPageService';
 import './../css/ChatPage.css';
 import './../css/Modal.css';
 
@@ -92,44 +92,15 @@ const ChatPage: React.FC = () => {
   }, [user, userRef]);
 
   useEffect(() => {
+    const unsubscribe = fetchChatMessages(
+      messagesRef,
+      setChatLogs,
+      setIsLoveConfessionModalOpen,
+      user.name,
+      isInitialMount
+    );
 
-    // モーダルが開かれたら `modalOpenFlag` を `true` に更新
-    const handleOpenModal = async (messageId: string) => {
-      setIsLoveConfessionModalOpen(true);
-      
-      // modalOpenFlag を true に更新
-      const messageDoc = doc(messagesRef, messageId);
-      await updateDoc(messageDoc, { modalOpenFlag: true });
-    };
-
-    const q = query(messagesRef, orderBy('date', 'desc'), limit(10));
-    
-    return onSnapshot(q, (snapshot: QuerySnapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          // 初回ロードを無視
-          if (isInitialMount.current) {
-            return;
-          }
-
-          if (change.doc.data().msg === "愛してます" && (user.name !== change.doc.data().name) && (change.doc.data().modalOpenFlag === false)) {
-            // チャットメッセージが「愛してますよ」ならモーダルを開く
-            handleOpenModal(change.doc.id);
-          }
-
-          // 初回以降にリアルタイムで追加されるメッセージのみを表示
-          const log = {
-            key: change.doc.id,
-            ...change.doc.data()
-          } as ChatLog;
-
-          setChatLogs((prevLogs) => [...prevLogs, log]);
-        }
-      });
-
-      // 初回ロード完了後にフラグをオフにする
-      isInitialMount.current = false;
-    });
+    return () => unsubscribe(); // クリーンアップ
   }, [messagesRef, user.name]);
 
   // モーダルを閉じるときにメッセージを送信する関数
