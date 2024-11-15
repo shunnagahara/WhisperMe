@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './../constants/common';
 import { User } from './../constants/types/user'
 import Modal from './../components/Modal';
+import { isUserDataComplete, handleNext, handleModalClose } from './../service/presentation/profileService'
 import ProgressBar from './../components/ProgressBar';
 import './../css/Modal.css';
 import './../css/Profile.css';
@@ -38,39 +39,6 @@ const Profile: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const validateInputs = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!profile.name.trim()) newErrors.name = '名前を入力してください。';
-    if (!profile.gender) newErrors.gender = '性別を選択してください。';
-    if (!profile.ageRange) newErrors.gender = '年代を選択してください。';
-    if (Object.keys(profile.personalities).length === 0) newErrors.personalities = '性格を選択してください。';
-    if (profile.gender && !profile.appearance) newErrors.appearance = '見ためを選択してください。';
-    if (!profile.targetGender) newErrors.targetGender = '相手の性別を選択してください。';
-    if (!profile.favoriteAgeRange) newErrors.favoriteAgeRange = '好きな年代を選択してください。';
-    if (Object.keys(profile.selectedPersonalities).length === 0) newErrors.selectedPersonalities = '好きな性格を選択してください。';
-    if (profile.gender && !profile.favoriteAppearance) newErrors.favoriteAppearance = '好きな見ためを選択してください。';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const isUserDataComplete = () => {
-    const storedUserData = localStorage.getItem('lovyu-user');
-    if (storedUserData) {
-      const { name, gender, ageRange, personalities, appearance, targetGender, favoriteAppearance, selectedPersonalities, favoriteAgeRange } = JSON.parse(storedUserData);
-      return name && gender && ageRange && personalities && appearance && targetGender && favoriteAppearance && selectedPersonalities && favoriteAgeRange;
-    }
-    return false;
-  };
-
-  const handleNext = () => {
-    if (validateInputs()) {
-      localStorage.setItem('lovyu-user', JSON.stringify(profile));
-      navigate('/list');
-    }
-  };
-
   useEffect(() => {
     if (isUserDataComplete()) {
       setShowModal(true); // Show modal if user data is complete
@@ -95,24 +63,17 @@ const Profile: React.FC = () => {
     setProgress(Math.floor((completedItems / totalItems) * 100));
   }, [profile.name, profile.gender, profile.ageRange, profile.personalities, profile.appearance, profile.targetGender, profile.favoriteAppearance, profile.selectedPersonalities, profile.favoriteAgeRange]);
 
-  const handleModalClose = (navigateToChat: boolean) => {
-    setShowModal(false);
-    if (navigateToChat) {
-      navigate('/list'); // Navigate to chat room list if user agrees
-    }
-  };
-
   return (
     <div className="profile-container">
 
       <Modal
         show={showModal}
-        handleClose={() => handleModalClose(false)}
+        handleClose={() => handleModalClose(setShowModal, navigate, false)}
         title="プロフィールが保存されています"
         message="保存されたプロフィールでチャットルームに移動しますか？"
       >
-        <button className="modal-button modal-button-confirm" onClick={() => handleModalClose(true)}>はい</button>
-        <button className="modal-button modal-button-cancel" onClick={() => handleModalClose(false)}>いいえ</button>
+        <button className="modal-button modal-button-confirm" onClick={() => handleModalClose(setShowModal, navigate, true)}>はい</button>
+        <button className="modal-button modal-button-cancel" onClick={() => handleModalClose(setShowModal, navigate, false)}>いいえ</button>
       </Modal>
       <ProgressBar progress={progress} />
       <div className="profile-card">
@@ -314,7 +275,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        <button onClick={handleNext} className="profile-button">次へ</button>
+        <button onClick={() => handleNext(profile, setErrors, navigate)} className="profile-button">次へ</button>
       </div>
     </div>
   );

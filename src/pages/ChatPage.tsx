@@ -4,28 +4,10 @@ import { db } from './../firebaseConfig';
 import { doc, setDoc, deleteDoc, collection, onSnapshot, addDoc, updateDoc, QuerySnapshot, query, orderBy, limit, serverTimestamp, } from 'firebase/firestore';
 import NameIcon from './../components/NameIcon';
 import Modal from './../components/Modal';
-import { User } from './../constants/types/user';
 import { ChatLog } from './../constants/types/chatLog';
+import { fetchUserFromWebStorage } from './../repository/webstorage/user'
 import './../css/ChatPage.css';
 import './../css/Modal.css';
-
-/**
- * ユーザー名 (localStrageに保存)
- * */
-const fetchUser = (): User => {
-  const user = JSON.parse(localStorage.getItem('lovyu-user'));
-  return {
-    name: user.name,
-    gender: user.gender,
-    ageRange: user.ageRange,
-    personalities: user.personalities,
-    appearance: user.appearance,
-    targetGender: user.targetGender,
-    favoriteAppearance: user.favoriteAppearance,
-    selectedPersonalities: user.selectedPersonalities,
-    favoriteAgeRange: user.favoriteAgeRange,
-  };
-};
 
 
 /**
@@ -42,7 +24,7 @@ const ChatPage: React.FC = () => {
   const modalTimer = useRef<NodeJS.Timeout | null>(null);
   const countdownTimer = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
-  const user = useMemo(() => fetchUser(), []);
+  const user = useMemo(() => fetchUserFromWebStorage(), []);
 
   // /chat/:room urlのパラメータ(チャットルーム名)
   const { room } = useParams<{ room: string }>();
@@ -177,7 +159,6 @@ const ChatPage: React.FC = () => {
 
   return (
     <>
-      {/* チャットログ */}
       <div className="chatroom-container">
         <div className="chatroom-logs-container">
           {chatLogs.map((item) => (
@@ -185,7 +166,6 @@ const ChatPage: React.FC = () => {
               className={`balloon_${user.name === item.name ? 'r' : 'l'}`}
               key={item.key}
             >
-              {/* {userName === item.name ? `[${formatHHMM(item.date)}]` : ''} */}
               <div className="faceicon">
                 <NameIcon
                   userName={item.name}
