@@ -1,33 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from './../firebaseConfig';
-import { collection, onSnapshot } from 'firebase/firestore';
 import { User } from './../constants/types/user';
+import { subscribeToRooms } from './../service/model/chatRoomListService';
+import { isRoomAvailable } from './../service/presentation/chatRoomListService'
+import Loading from './../components/Loading'
 import { RoomInfo } from './../constants/types/roomInfo';
 import './../css/ChatRoomList.css';
-
-const calculateMatchingRate = (user: User, storedUser: User): number => {
-  let matchCount = 0;
-  let totalAttributes = 0;
-
-  if (user.appearance === storedUser.favoriteAppearance) matchCount++;
-  totalAttributes++;
-
-  if (user.ageRange === storedUser.favoriteAgeRange) matchCount++;
-  totalAttributes++;
-
-  // `selectedPersonalities`オブジェクトの比較
-  for (const key in user.personalities) {
-    if (user.personalities[key] === storedUser.selectedPersonalities[key]) {
-      matchCount++;
-    }
-    totalAttributes++;
-  }
-
-  // 一致率をパーセンテージで返す
-  return Math.floor((matchCount / totalAttributes) * 100);
-};
-
 
 const ChatRoomList: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
@@ -35,51 +13,16 @@ const ChatRoomList: React.FC = () => {
   const storedUser = JSON.parse(localStorage.getItem('lovyu-user') || '{}') as User
 
   useEffect(() => {
-    const roomNames = ['1', '2', '3', '4', '5', '6'];
-    const unsubscribers = roomNames.map((roomId) => {
-      const activeUsersRef = collection(db, 'chatroom', roomId, 'activeUsers');
-
-      return onSnapshot(activeUsersRef, async (snapshot) => {
-        // 各ユーザーのドキュメントIDを取得し、詳細情報を取得する
-        const users = await Promise.all(
-          snapshot.docs.map(async (userDoc) => {
-            return userDoc.data() as User
-          })
-        );
-
-        setRooms((prevRooms) => {
-          const userCount = snapshot.size;
-          const matchingRate = userCount === 1 && users[0] ? calculateMatchingRate(users[0], storedUser) : undefined;
-          const newRoomData = {
-            id: roomId,
-            userCount,
-            matchingRate,
-            users,
-          };
-          return [...prevRooms.filter((r) => r.id !== roomId), newRoomData];
-        });
-
-        setIsLoading(false);
-      });
+    const unsubscribe = subscribeToRooms({
+      storedUser,
+      setRooms,
+      setIsLoading,
     });
-
-    return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => unsubscribe();
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <p>ルームを読み込み中...</p>
-      </div>
-    );
-  }
-
-  const isRoomAvailable = (userCount:number, userGenger?:string, userTargetGenger?:string) => {
-    if (userCount === 0) return true
-    if (userCount === 1 && (userGenger === storedUser.targetGender) && (userTargetGenger === storedUser.gender)) return true
-    return false
+    return <Loading message="ルームを読み込み中..." />;
   }
 
   return (
@@ -90,7 +33,7 @@ const ChatRoomList: React.FC = () => {
 
           return (
             <div key={room.id} className={`room-link ${room.userCount >= 2  ? 'room-full' : ''}`}>
-              {isRoomAvailable(room.userCount, room.users[0]?.gender, room.users[0]?.targetGender) ? (
+              {isRoomAvailable(room.userCount, storedUser, room.users[0]?.gender, room.users[0]?.targetGender) ? (
                 <Link to={`/chat/${room.id}`} className="room-button">
                   Room {room.id} ({room.userCount} 人)
                   {room.userCount === 1 && room.matchingRate && (
