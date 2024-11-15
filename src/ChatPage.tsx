@@ -17,8 +17,8 @@ import {
 } from 'firebase/firestore';
 import NameIcon from './NameIcon';
 import Modal from './Modal'; // モーダルコンポーネントをインポート
-import './ChatPage.css';
-import './Modal.css';
+import './css/ChatPage.css';
+import './css/Modal.css';
 
 type ChatLog = {
   key: string;

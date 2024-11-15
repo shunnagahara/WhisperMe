@@ -4,8 +4,8 @@ import { ReactComponent as FemaleIcon } from './icons/female.svg'; // 女性ア�
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import ProgressBar from './ProgressBar';
-import './Modal.css';
-import './Profile.css';
+import './css/Modal.css';
+import './css/Profile.css';
 
 const personalityOptions = ["やさしい", "オラオラ", "しずか", "おもしろい"];
 const ageRangeOptions = ["18 - 25", "25 - 30", "30 - 40", "40 - 50", "50 - 60"];

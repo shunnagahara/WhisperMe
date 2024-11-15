@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { db } from './firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
-import './ChatRoomList.css';
+import './css/ChatRoomList.css';
 
 interface RoomInfo {
   id: string;
