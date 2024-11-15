@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { db } from './firebaseConfig';
+import { db } from './../firebaseConfig';
 import { doc, setDoc, deleteDoc, collection, onSnapshot, addDoc, updateDoc, QuerySnapshot, query, orderBy, limit, serverTimestamp, } from 'firebase/firestore';
-import NameIcon from './NameIcon';
-import Modal from './Modal';
-import { User } from './constants/types/user';
-import { ChatLog } from './constants/types/chatLog';
-import './css/ChatPage.css';
-import './css/Modal.css';
+import NameIcon from './../NameIcon';
+import Modal from './../Modal';
+import { User } from './../constants/types/user';
+import { ChatLog } from './../constants/types/chatLog';
+import './../css/ChatPage.css';
+import './../css/Modal.css';
 
 /**
  * ユーザー名 (localStrageに保存)

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as MaleIcon } from './icons/male.svg';
-import { ReactComponent as FemaleIcon } from './icons/female.svg';
+import { ReactComponent as MaleIcon } from './../icons/male.svg';
+import { ReactComponent as FemaleIcon } from './../icons/female.svg';
 import { useNavigate } from 'react-router-dom';
-import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './constants/common';
-import { User } from './constants/types/user'
-import Modal from './Modal';
-import ProgressBar from './ProgressBar';
-import './css/Modal.css';
-import './css/Profile.css';
+import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './../constants/common';
+import { User } from './../constants/types/user'
+import Modal from './../Modal';
+import ProgressBar from './../ProgressBar';
+import './../css/Modal.css';
+import './../css/Profile.css';
 
 const Profile: React.FC = () => {
 
