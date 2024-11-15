@@ -194,7 +194,7 @@
 .progress-text {
   position: absolute;
   bottom: -25px; /* バーの下に表示 */
-  right: -15px;
+  right: -8px;
   color: #333;
   font-size: 14px;
   font-weight: bold;
