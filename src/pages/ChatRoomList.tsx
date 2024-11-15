@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User } from './../constants/types/user';
 import { subscribeToRooms } from './../service/model/chatRoomListService';
 import { isRoomAvailable } from './../service/presentation/chatRoomListService'
 import Loading from './../components/Loading'
 import { RoomInfo } from './../constants/types/roomInfo';
+import { fetchUserFromWebStorage } from '../repository/webstorage/user';
 import './../css/ChatRoomList.css';
 
 const ChatRoomList: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const storedUser = JSON.parse(localStorage.getItem('lovyu-user') || '{}') as User
+  const storedUser = fetchUserFromWebStorage()
 
   useEffect(() => {
     const unsubscribe = subscribeToRooms({
@@ -33,7 +33,7 @@ const ChatRoomList: React.FC = () => {
 
           return (
             <div key={room.id} className={`room-link ${room.userCount >= 2  ? 'room-full' : ''}`}>
-              {isRoomAvailable(room.userCount, storedUser, room.users[0]?.gender, room.users[0]?.targetGender) ? (
+              {isRoomAvailable(room.userCount, storedUser, room.user?.gender, room.user?.targetGender) ? (
                 <Link to={`/chat/${room.id}`} className="room-button">
                   Room {room.id} ({room.userCount} 人)
                   {room.userCount === 1 && room.matchingRate && (

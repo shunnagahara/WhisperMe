@@ -2,6 +2,7 @@ export const personalityOptions = ["やさしい", "オラオラ", "しずか", 
 export const ageRangeOptions = ["18 - 25", "25 - 30", "30 - 40", "40 - 50", "50 - 60"];
 export const maleAppearanceOptions = ['爽やか系', 'ワイルド系', '韓国系'];
 export const femaleAppearanceOptions = ['かわいい系', 'キレイ系', 'かわキレイ系'];
+export const roomNumbers = ["1", "2", "3", "4", "5", "6"];
 export const errorMessages = {
     name:{ required:'名前を入力してください'},
     gender:{ required:'性別を選択してください'},

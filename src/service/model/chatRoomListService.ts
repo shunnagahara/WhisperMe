@@ -1,7 +1,9 @@
 import { User } from './../../constants/types/user';
+import { roomNumbers } from './../../constants/common'
 import { collection, onSnapshot } from "firebase/firestore";
 import { RoomInfo } from '../../constants/types/roomInfo';
 import { db } from './../../firebaseConfig';
+import { fetchActiveUserFromFirestore } from '../../repository/firestore/activeUser';
 
 type RoomSubscriptionArgs = {
   storedUser: User;
@@ -14,31 +16,23 @@ export const subscribeToRooms = ({
   setRooms,
   setIsLoading,
 }: RoomSubscriptionArgs) => {
-  const roomNames = ["1", "2", "3", "4", "5", "6"];
 
-  const unsubscribers = roomNames.map((roomId) => {
+  const unsubscribers = roomNumbers.map((roomId) => {
     const activeUsersRef = collection(db, "chatroom", roomId, "activeUsers");
 
     return onSnapshot(activeUsersRef, async (snapshot) => {
       // 各ユーザーのドキュメントIDを取得し、詳細情報を取得する
-      const users = await Promise.all(
-        snapshot.docs.map(async (userDoc) => {
-          return userDoc.data() as User;
-        })
-      );
+      const user: User | null = await fetchActiveUserFromFirestore(snapshot);
 
       setRooms((prevRooms) => {
         const userCount = snapshot.size;
-        const matchingRate =
-          userCount === 1 && users[0]
-            ? calculateMatchingRate(users[0], storedUser)
-            : undefined;
+        const matchingRate = userCount === 1 && user ? calculateMatchingRate(user, storedUser) : undefined;
 
         const newRoomData = {
           id: roomId,
           userCount,
           matchingRate,
-          users,
+          user,
         };
         return [...prevRooms.filter((r) => r.id !== roomId), newRoomData];
       });
