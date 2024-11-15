@@ -7,15 +7,14 @@ const ProgressBar = ({ progress }: { progress: number }) => {
     };
     return (
         <div className="progress-bar">
-          <div
-            className="progress-bar-fill"
-            style={{
-              width: `${progress}%`,
-              backgroundColor: getProgressColor(progress),
-            }}
-          >
+            <div
+                className="progress-bar-fill"
+                style={{
+                    height: `${progress}%`, // 進捗率に応じた高さ
+                    backgroundColor: getProgressColor(progress), // 進捗率に応じた色
+                }}
+            />
             <span className="progress-text">{`${progress}%`}</span>
-          </div>
         </div>
     );
 }

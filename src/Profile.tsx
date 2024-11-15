@@ -114,10 +114,8 @@ const Profile: React.FC = () => {
         <button className="modal-button modal-button-confirm" onClick={() => handleModalClose(true)}>はい</button>
         <button className="modal-button modal-button-cancel" onClick={() => handleModalClose(false)}>いいえ</button>
       </Modal>
-
+      <ProgressBar progress={progress} />
       <div className="profile-card">
-
-        <ProgressBar progress={progress} />
 
         <div className="profile-input-container">
           <input

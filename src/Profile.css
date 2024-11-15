@@ -170,32 +170,39 @@
   }
 
   .progress-bar {
-    width: 100%;
-    height: 20px; /* 高さを少し増やしてパーセント表示が見やすく */
-    background-color: #ddd;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    position: relative;
-  }
+    position: fixed;
+    left: 100px;
+    top: 50px;
+    height: 70vh; /* 画面全体の高さ */
+    width: 20px; /* プログレスバーの幅 */
+    background-color: #ddd; /* 背景色 */
+    border-radius: 10px;
+    z-index: 100; /* 他の要素の上に表示 */
+    align-items: flex-end; /* 下から進捗バーが伸びるように */
+}
 
-  .progress-bar-fill {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    transition: width 0.3s ease, background-color 0.3s ease; /* 色の変化もアニメーション */
-  }
+.progress-bar-fill {
+  width: 100%; /* 横幅は全体に合わせる */
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #4CAF50; /* 初期の進捗色 */
+  transition: height 0.5s ease, background-color 0.5s ease; /* 高さと色のアニメーション */
+  height: 0; /* 初期の高さ */
+}
 
-  .progress-text {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    color: #fff;
-  }
+/* パーセント表示のテキスト */
+.progress-text {
+  position: absolute;
+  bottom: -25px; /* バーの下に表示 */
+  right: -15px;
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #fff;
+  padding: 3px 6px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
 
   /* モバイル対応 */
   @media (max-width: 480px) {
