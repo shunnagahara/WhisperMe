@@ -1,6 +1,5 @@
-// src/utils/fetchFirstUserFromSnapshot.ts
 import { QuerySnapshot, setDoc, updateDoc, deleteDoc, DocumentData, DocumentReference, serverTimestamp } from "firebase/firestore";
-import { User } from "../../constants/types/user"; // User型をインポート
+import { User } from "../../constants/types/user";
 
 /**
  * Firestoreのスナップショットから最初のユーザーデータを取得
@@ -36,7 +35,7 @@ export const setActiveUser = async (
     );
   } catch (error) {
     console.error("Failed to update user document:", error);
-    throw error; // 必要に応じてエラーを再スロー
+    throw error;
   }
 };
 
@@ -68,6 +67,6 @@ export const deleteActiveUser = async (userRef: DocumentReference): Promise<void
     await deleteDoc(userRef);
   } catch (error) {
     console.error("Failed to delete user document:", error);
-    throw error; // 必要に応じてエラーを再スロー
+    throw error;
   }
 };

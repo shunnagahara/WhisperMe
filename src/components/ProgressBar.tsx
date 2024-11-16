@@ -1,8 +1,8 @@
 
 const ProgressBar = ({ progress }: { progress: number }) => {
     const getProgressColor = (progress: number) => {
-        if (progress < 30) return '#e74c3c'; // 赤
-        if (progress < 70) return '#f39c12'; // オレンジ
+        if (progress < 30) return '#e74c3c';
+        if (progress < 70) return '#f39c12';
         return '#2ecc71'; // 緑
     };
     return (
@@ -10,8 +10,8 @@ const ProgressBar = ({ progress }: { progress: number }) => {
             <div
                 className="progress-bar-fill"
                 style={{
-                    height: `${progress}%`, // 進捗率に応じた高さ
-                    backgroundColor: getProgressColor(progress), // 進捗率に応じた色
+                    height: `${progress}%`,
+                    backgroundColor: getProgressColor(progress),
                 }}
             />
             <span className="progress-text">{`${progress}%`}</span>

@@ -1,5 +1,5 @@
 // src/utils/calculateProgress.ts
-import { User } from "../../constants/types/user"; // User型を適切にインポート
+import { User } from "../../constants/types/user";
 
 export const calculateProgress = (profile: User): number => {
   const totalItems = Object.keys(profile).length;

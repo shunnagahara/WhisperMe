@@ -1,7 +1,7 @@
 import React from "react";
 
 type LoadingProps = {
-  message?: string; // ローディング中のメッセージ
+  message?: string;
 };
 
 const Loading: React.FC<LoadingProps> = ({ message = "読み込み中..." }) => {

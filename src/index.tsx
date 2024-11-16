@@ -21,8 +21,8 @@ window.addEventListener('load', () => {
   if (splash && root) {
       setTimeout(() => {
           splash.style.display = 'none';
-          root.style.display = 'block'; // `root`を表示
-      }, 3000); // 表示時間を調整可能
+          root.style.display = 'block';
+      }, 3000);
   }
 });
 

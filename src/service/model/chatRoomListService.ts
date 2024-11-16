@@ -1,9 +1,10 @@
-import { User } from './../../constants/types/user';
-import { roomNumbers } from './../../constants/common'
 import { collection, onSnapshot } from "firebase/firestore";
-import { RoomInfo } from '../../constants/types/roomInfo';
 import { db } from './../../firebaseConfig';
+import { User } from './../../constants/types/user';
+import { RoomInfo } from '../../constants/types/roomInfo';
+import { roomNumbers } from './../../constants/common';
 import { fetchActiveUserFromFirestore } from '../../repository/firestore/activeUser';
+
 
 type RoomSubscriptionArgs = {
   storedUser: User;
@@ -21,7 +22,6 @@ export const subscribeToRooms = ({
     const activeUsersRef = collection(db, "chatroom", roomId, "activeUsers");
 
     return onSnapshot(activeUsersRef, async (snapshot) => {
-      // 各ユーザーのドキュメントIDを取得し、詳細情報を取得する
       const user: User | null = await fetchActiveUserFromFirestore(snapshot);
 
       setRooms((prevRooms) => {
@@ -40,7 +40,6 @@ export const subscribeToRooms = ({
       setIsLoading(false);
     });
   });
-
   return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
 };
 
@@ -54,14 +53,11 @@ export const calculateMatchingRate = (user: User, storedUser: User): number => {
   if (user.ageRange === storedUser.favoriteAgeRange) matchCount++;
   totalAttributes++;
 
-  // `selectedPersonalities`オブジェクトの比較
   for (const key in user.personalities) {
     if (user.personalities[key] === storedUser.selectedPersonalities[key]) {
       matchCount++;
     }
     totalAttributes++;
   }
-
-  // 一致率をパーセンテージで返す
   return Math.floor((matchCount / totalAttributes) * 100);
 };

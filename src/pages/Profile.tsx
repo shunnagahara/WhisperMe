@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as MaleIcon } from './../assets/icons/male.svg';
 import { ReactComponent as FemaleIcon } from './../assets/icons/female.svg';
-import { useNavigate } from 'react-router-dom';
 import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './../constants/common';
-import { User } from './../constants/types/user'
+import { User } from './../constants/types/user';
+import { isUserDataComplete, handleNext, handleModalClose } from './../service/presentation/profileService';
+import { calculateProgress } from './../service/model/profileService';
 import Modal from './../components/Modal';
-import { isUserDataComplete, handleNext, handleModalClose } from './../service/presentation/profileService'
-import { calculateProgress } from './../service/model/profileService'
 import ProgressBar from './../components/ProgressBar';
 import './../css/Profile.css';
+
 
 const Profile: React.FC = () => {
 
@@ -23,10 +24,9 @@ const Profile: React.FC = () => {
     selectedPersonalities: [],
     favoriteAgeRange: ''
   });
-
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress]   = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors]       = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
   const updateProfile = (key: keyof User, value: any) => {
@@ -39,13 +39,11 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isUserDataComplete()) {
-      setShowModal(true); // Show modal if user data is complete
-    }
+    if (isUserDataComplete()) setShowModal(true);
   }, []);
 
   useEffect(() => {
-    const progressValue = calculateProgress(profile); // 外部関数を利用
+    const progressValue = calculateProgress(profile);
     setProgress(progressValue);
   }, [profile]);
 

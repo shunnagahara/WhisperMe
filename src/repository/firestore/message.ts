@@ -1,5 +1,6 @@
-import {addDoc, updateDoc, DocumentReference, CollectionReference } from "firebase/firestore";
+import { addDoc, CollectionReference, DocumentReference, updateDoc } from "firebase/firestore";
 import { ChatLog } from "../../constants/types/chatLog";
+
 /**
  * メッセージドキュメントの`modalOpenFlag`を更新
  * @param messageRef Firestoreのメッセージドキュメント参照
@@ -13,7 +14,7 @@ export const updateMessageModalFlag = async (
     await updateDoc(messageRef, { modalOpenFlag });
   } catch (error) {
     console.error("Failed to update modalOpenFlag:", error);
-    throw error; // 必要に応じてエラーを再スロー
+    throw error;
   }
 };
 
@@ -30,6 +31,6 @@ export const addMessage = async (
     await addDoc(messagesRef, messageData);
   } catch (error) {
     console.error("Failed to add message:", error);
-    throw error; // 必要に応じてエラーを再スロー
+    throw error;
   }
 };

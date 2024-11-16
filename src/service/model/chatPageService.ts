@@ -1,7 +1,20 @@
-import { DocumentReference, doc, CollectionReference, onSnapshot, query, orderBy, limit, QuerySnapshot  } from "firebase/firestore";
+// **外部ライブラリ**
+import {
+  CollectionReference,
+  DocumentReference,
+  QuerySnapshot,
+  doc,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { ChatLog } from "../../constants/types/chatLog";
 import { deleteActiveUser, updateLastUpdated } from "../../repository/firestore/activeUser";
-import { updateMessageModalFlag, addMessage } from "../../repository/firestore/message";
+import { addMessage, updateMessageModalFlag } from "../../repository/firestore/message";
+import { CONFESSION_MESSAGE } from "../../constants/common";
+
+
 /**
  * BeforeUnloadイベントでFirestoreのユーザー情報を削除する
  * @param userRef Firestoreのユーザードキュメント参照
@@ -36,7 +49,6 @@ export const handleCountdown = (
       clearInterval(countdownTimer.current);
     }
   }
-
   return () => {
     if (countdownTimer.current) {
       clearInterval(countdownTimer.current);
@@ -56,12 +68,9 @@ export const handleOpenModal = async (
   setIsLoveConfessionModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 ): Promise<void> => {
   try {
-    // モーダルを開く
     setIsLoveConfessionModalOpen(true);
-
     const messageDoc = doc(messagesRef, messageId);
     await updateMessageModalFlag(messageDoc, true);
-
   } catch (error) {
     console.error("Failed to open modal and update modalOpenFlag:", error);
   }
@@ -82,29 +91,27 @@ export const fetchChatMessages = (
   userName: string,
   isInitialMount: React.MutableRefObject<boolean>
 ) => {
+  if (isInitialMount.current) {
+    isInitialMount.current = false;
+    return;
+  }
   const q = query(messagesRef, orderBy("date", "desc"), limit(10));
-
   return onSnapshot(q, (snapshot: QuerySnapshot) => {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "added") {
         if (isInitialMount.current) return;
-
         const data = change.doc.data() as ChatLog;
         if (isLoveConfessionMessage(data, userName)) {
-          // モーダルを開く処理を呼び出し
           handleOpenModal(messagesRef, change.doc.id, setIsReplyModalOpen);
         }
 
-        // 初回以降にリアルタイムで追加されるメッセージのみを表示
         const log = {
           key: change.doc.id,
           ...data,
         } as ChatLog;
-
         setChatLogs((prevLogs) => [...prevLogs, log]);
       }
     });
-    isInitialMount.current = false;
   });
 };
 
@@ -126,20 +133,14 @@ export const submitMsg = async (
   message?: string,
   substituteMessage?: string
 ): Promise<void> => {
-
   const properMessage = (message)? message : substituteMessage
-
   await addMessage(messagesRef, {
     name: userName,
     msg: properMessage,
     date: new Date().getTime(),
     modalOpenFlag,
   });
-
-  // ユーザーの`lastUpdated`フィールドを更新
   await updateLastUpdated(userRef)
-
-  // 入力欄をリセット
   resetInput();
 };
 
@@ -154,7 +155,7 @@ export const isLoveConfessionMessage = (
   currentUserName: string
 ): boolean => {
   return (
-    messageData.msg === "愛してます" &&
+    messageData.msg === CONFESSION_MESSAGE &&
     messageData.name !== currentUserName &&
     messageData.modalOpenFlag === false
   );

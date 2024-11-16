@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { subscribeToRooms } from './../service/model/chatRoomListService';
-import { isRoomAvailable } from './../service/presentation/chatRoomListService'
-import Loading from './../components/Loading'
-import { RoomInfo } from './../constants/types/roomInfo';
+import { isRoomAvailable } from './../service/presentation/chatRoomListService';
 import { fetchUserFromWebStorage } from '../repository/webstorage/user';
+import { RoomInfo } from './../constants/types/roomInfo';
+import Loading from './../components/Loading';
 import './../css/ChatRoomList.css';
 
+
 const ChatRoomList: React.FC = () => {
-  const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const storedUser = fetchUserFromWebStorage()
+  const [rooms, setRooms]         = useState<RoomInfo[]>([]);
+  const storedUser                = fetchUserFromWebStorage()
 
   useEffect(() => {
     const unsubscribe = subscribeToRooms({
