@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from './../firebaseConfig';
-import { doc, setDoc, collection, serverTimestamp, } from 'firebase/firestore';
+import { doc, collection, } from 'firebase/firestore';
 import NameIcon from './../components/NameIcon';
 import Modal from './../components/Modal';
 import { ChatLog } from './../constants/types/chatLog';
 import { fetchUserFromWebStorage } from './../repository/webstorage/user'
 import { handleBeforeUnload, handleCountdown, fetchChatMessages, submitMsg } from '../service/model/chatPageService';
+import { updateUserLastUpdated } from '../repository/firestore/activeUser';
 import './../css/ChatPage.css';
 import './../css/Modal.css';
 
@@ -19,15 +20,13 @@ import './../css/Modal.css';
 const ChatPage: React.FC = () => {
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
   const [inputMsg, setInputMsg] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfessionModalOpen, setIsConfessionModalOpen] = useState(false);
   const [countdown, setCountdown] = useState(10);
-  const [isLoveConfessionModalOpen, setIsLoveConfessionModalOpen] = useState(false);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const modalTimer = useRef<NodeJS.Timeout | null>(null);
   const countdownTimer = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
   const user = useMemo(() => fetchUserFromWebStorage(), []);
-
-  // /chat/:room urlのパラメータ(チャットルーム名)
   const { room } = useParams<{ room: string }>();
   const roomRef = collection(db, 'chatroom', room, 'activeUsers');
   const userRef = doc(roomRef, user.name); 
@@ -37,10 +36,11 @@ const ChatPage: React.FC = () => {
   );
 
   useEffect(() => {
-    setDoc(userRef, { ...user, lastUpdated: serverTimestamp() }, { merge: true });
+    const updateUser = async () => {await updateUserLastUpdated(userRef, user);};
+    updateUser();
     const unloadListener = handleBeforeUnload(userRef);
     window.addEventListener("beforeunload", unloadListener);
-    modalTimer.current = setInterval(() => setIsModalOpen(true), 30000); // 5分おき
+    modalTimer.current = setInterval(() => setIsConfessionModalOpen(true), 30000); // 5分おき
     return () => {
       if (modalTimer.current) clearInterval(modalTimer.current);
     };
@@ -49,9 +49,9 @@ const ChatPage: React.FC = () => {
 
 
   useEffect(() => {
-    const cleanup = handleCountdown(isModalOpen, countdownTimer, setCountdown);
+    const cleanup = handleCountdown(isConfessionModalOpen, countdownTimer, setCountdown);
     return cleanup; // クリーンアップ関数を実行
-  }, [isModalOpen]);  
+  }, [isConfessionModalOpen]);  
 
   useEffect(() => {
     if (countdown === 0) {
@@ -63,7 +63,7 @@ const ChatPage: React.FC = () => {
     const unsubscribe = fetchChatMessages(
       messagesRef,
       setChatLogs,
-      setIsLoveConfessionModalOpen,
+      setIsReplyModalOpen,
       user.name,
       isInitialMount
     );
@@ -77,20 +77,20 @@ const ChatPage: React.FC = () => {
   };
 
   // モーダルを閉じるときにメッセージを送信する関数
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseConfessionModal = () => {
+    setIsConfessionModalOpen(false);
     handleSend("", "愛してます");
     setCountdown(10);
   };
 
   // モーダルを閉じてメッセージを送信
-  const handleLoveConfessionSend = () => {
-    setIsLoveConfessionModalOpen(false);
+  const handleReplySend = () => {
+    setIsReplyModalOpen(false);
     handleSend("", "私も愛してます");
   };
 
   const closeWithoutSending = () => {
-    setIsModalOpen(false);
+    setIsConfessionModalOpen(false);
     setCountdown(10);
   };
 
@@ -141,14 +141,14 @@ const ChatPage: React.FC = () => {
         </div>
 
         {/* モーダルコンポーネント */}
-        <Modal show={isModalOpen} handleClose={handleCloseModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
+        <Modal show={isConfessionModalOpen} handleClose={handleCloseConfessionModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
           <input className="modal-input" type="text" value="愛してます" readOnly />
-          <button className="modal-submit-button" onClick={handleCloseModal}>送信</button>
+          <button className="modal-submit-button" onClick={handleCloseConfessionModal}>送信</button>
         </Modal>
 
-        <Modal show={isLoveConfessionModalOpen} handleClose={() => setIsLoveConfessionModalOpen(false)} title="愛の告白" message="相手から愛の告白がありました" subMessage="あなたも思いを伝えますか？" countdown=''>
+        <Modal show={isReplyModalOpen} handleClose={() => setIsReplyModalOpen(false)} title="愛の告白" message="相手から愛の告白がありました" subMessage="あなたも思いを伝えますか？" countdown=''>
           <input type="text" value="私も愛してます" readOnly className="modal-input" />
-          <button onClick={handleLoveConfessionSend} className="modal-submit-button">送信</button>
+          <button onClick={handleReplySend} className="modal-submit-button">送信</button>
         </Modal>
       </div>
     </>
