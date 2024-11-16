@@ -6,10 +6,11 @@ import NameIcon from './../components/NameIcon';
 import Modal from './../components/Modal';
 import { ChatLog } from './../constants/types/chatLog';
 import { fetchUserFromWebStorage } from './../repository/webstorage/user'
-import { handleBeforeUnload, handleCountdown, fetchChatMessages, submitMsg } from '../service/model/chatPageService';
-import { updateUserLastUpdated } from '../repository/firestore/activeUser';
+import { handleBeforeUnload, handleCountdown, fetchChatMessages, submitMsg, startModalTimer, clearModalTimer } from '../service/model/chatPageService';
+import { setActiveUser } from '../repository/firestore/activeUser';
 import './../css/ChatPage.css';
 import './../css/Modal.css';
+import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE } from '../constants/common';
 
 
 /**
@@ -36,13 +37,14 @@ const ChatPage: React.FC = () => {
   );
 
   useEffect(() => {
-    const updateUser = async () => {await updateUserLastUpdated(userRef, user);};
-    updateUser();
+    const activeUser = async () => {await setActiveUser(userRef, user);};
+    activeUser();
     const unloadListener = handleBeforeUnload(userRef);
     window.addEventListener("beforeunload", unloadListener);
-    modalTimer.current = setInterval(() => setIsConfessionModalOpen(true), 30000); // 5分おき
+    startModalTimer(setIsConfessionModalOpen, modalTimer);
+
     return () => {
-      if (modalTimer.current) clearInterval(modalTimer.current);
+      clearModalTimer(modalTimer);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -54,9 +56,7 @@ const ChatPage: React.FC = () => {
   }, [isConfessionModalOpen]);  
 
   useEffect(() => {
-    if (countdown === 0) {
-      closeWithoutSending();
-    }
+    if (countdown === 0) closeWithoutSending();
   }, [countdown]);
 
   useEffect(() => {
@@ -72,21 +72,21 @@ const ChatPage: React.FC = () => {
   }, [messagesRef, user.name]);
 
   const handleSend = async (inputMessage: string, substituteMessage?:string) => {
-    const modalOpenFlag = inputMsg !== "愛してます";
+    const modalOpenFlag = inputMsg !== CONFESSION_MESSAGE;
     await submitMsg(messagesRef, userRef, user.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage);
   };
 
   // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseConfessionModal = () => {
     setIsConfessionModalOpen(false);
-    handleSend("", "愛してます");
+    handleSend("", CONFESSION_MESSAGE);
     setCountdown(10);
   };
 
   // モーダルを閉じてメッセージを送信
   const handleReplySend = () => {
     setIsReplyModalOpen(false);
-    handleSend("", "私も愛してます");
+    handleSend("", CONFESSION_REPLY_MESSAGE);
   };
 
   const closeWithoutSending = () => {
@@ -142,12 +142,12 @@ const ChatPage: React.FC = () => {
 
         {/* モーダルコンポーネント */}
         <Modal show={isConfessionModalOpen} handleClose={handleCloseConfessionModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
-          <input className="modal-input" type="text" value="愛してます" readOnly />
+          <input className="modal-input" type="text" value={CONFESSION_MESSAGE} readOnly />
           <button className="modal-submit-button" onClick={handleCloseConfessionModal}>送信</button>
         </Modal>
 
         <Modal show={isReplyModalOpen} handleClose={() => setIsReplyModalOpen(false)} title="愛の告白" message="相手から愛の告白がありました" subMessage="あなたも思いを伝えますか？" countdown=''>
-          <input type="text" value="私も愛してます" readOnly className="modal-input" />
+          <input type="text" value={CONFESSION_REPLY_MESSAGE} readOnly className="modal-input" />
           <button onClick={handleReplySend} className="modal-submit-button">送信</button>
         </Modal>
       </div>

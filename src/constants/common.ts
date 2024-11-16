@@ -14,3 +14,5 @@ export const errorMessages = {
     selectedPersonalities:{ required:'好きな性格を選択してください。'},
     favoriteAppearance:{ required:'好きな見ためを選択してください。'},
 };
+export const CONFESSION_MESSAGE = "愛してます";
+export const CONFESSION_REPLY_MESSAGE = "私も愛してます";

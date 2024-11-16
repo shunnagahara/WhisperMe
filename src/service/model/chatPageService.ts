@@ -159,3 +159,30 @@ export const isLoveConfessionMessage = (
     messageData.modalOpenFlag === false
   );
 };
+
+/**
+ * モーダルを一定時間ごとに開くタイマーを設定
+ * @param setIsConfessionModalOpen モーダルを開く状態を更新する関数
+ * @param intervalRef タイマーIDを保持するRef
+ * @param intervalTime タイマーの間隔（ミリ秒単位、デフォルト: 30000ミリ秒）
+ */
+export const startModalTimer = (
+  setIsConfessionModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  intervalRef: React.MutableRefObject<NodeJS.Timeout | null>,
+  intervalTime: number = 30000
+) => {
+  intervalRef.current = setInterval(() => {
+    setIsConfessionModalOpen(true);
+  }, intervalTime);
+};
+
+/**
+ * モーダルタイマーをクリア
+ * @param intervalRef タイマーIDを保持するRef
+ */
+export const clearModalTimer = (intervalRef: React.MutableRefObject<NodeJS.Timeout | null>) => {
+  if (intervalRef.current) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
+};

@@ -24,7 +24,7 @@ export const fetchActiveUserFromFirestore = async (
  * @param userRef Firestoreのユーザードキュメント参照
  * @param user 更新するユーザー情報
  */
-export const updateUserLastUpdated = async (
+export const setActiveUser = async (
   userRef: DocumentReference,
   user: User
 ): Promise<void> => {
