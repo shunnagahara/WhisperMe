@@ -62,12 +62,12 @@ const Profile: React.FC = () => {
       <ProgressBar progress={progress} />
       <div className="profile-card">
 
-        <div className="profile-input-container">
+        <div className="profile-input-container input-name">
           <input
             type="text"
             value={profile.name}
             onChange={(e) => updateProfile("name", e.target.value)}
-            placeholder="あなたの名前"
+            placeholder="あなたの名前を入力してください"
             className="profile-input"
           />
           {errors.name && <p className="error-text">{errors.name}</p>}
@@ -75,7 +75,7 @@ const Profile: React.FC = () => {
 
         <div className="profile-input-container">
           <div className="profile-input-title-div">
-            <p>あなたの性別を選択:</p>
+            <p>あなたの性別を選択してください</p>
           </div>
           <div className="gender-selection">
             <label>
@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
         <div className="profile-input-container">
           <div className="personality-container">
             <div className="profile-input-title-div">
-              <p>性格を選択</p>
+              <p>あなたの性格を選択してください</p>
             </div>
             <div className="personality-options">
               {personalityOptions.map((personality) => (
@@ -148,7 +148,7 @@ const Profile: React.FC = () => {
           {profile.gender && (
             <div className="personality-container">
               <div className="profile-input-title-div">
-                <p>見ためを選択してください</p>
+                <p>あなたの見ためを選択してください</p>
               </div>
               <div className="personality-options">
                 {(profile.gender === 'male' ? maleAppearanceOptions : femaleAppearanceOptions).map((myAppearance) => (
@@ -168,7 +168,7 @@ const Profile: React.FC = () => {
 
         <div className="profile-input-container">
           <div className="profile-input-title-div">
-            <p>相手の性別を選択:</p>
+            <p>相手の性別を選択してください</p>
           </div>
           <div className="gender-selection">
             <label>
@@ -242,7 +242,7 @@ const Profile: React.FC = () => {
         <div className="profile-input-container">
           <div className="personality-container">
             <div className="profile-input-title-div">
-              <p>好きな性格を選択</p>
+              <p>好きな性格を選択してください</p>
             </div>
             <div className="personality-options">
               {personalityOptions.map((personality) => (

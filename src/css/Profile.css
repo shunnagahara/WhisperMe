@@ -28,7 +28,7 @@
   .profile-card p {
     font-size: 1rem;
     color: #666;
-    margin-bottom: 1.5rem;
+    margin-top: 10px;
   }
   
   .profile-input {
@@ -207,11 +207,40 @@
   /* モバイル対応 */
   @media (max-width: 480px) {
     .profile-card {
-      padding: 1.5rem;
+      padding: 30px 10px;
     }
   
     .profile-input, .profile-button {
       font-size: 0.9rem;
+    }
+
+    .profile-card .error-text {
+      text-align: center;
+    }
+
+    .input-name {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .progress-bar {
+      left: 5px;
+      width: 10px;
+    }
+
+    .progress-text {
+      bottom: -20px;
+      left: -5px;
+      width: 10px;
+      font-size: 10px;
+    }
+
+    .profile-input {
+      width: 95%;
+    }
+
+    .profile-button {
+      width: 90%;
     }
   }
   
