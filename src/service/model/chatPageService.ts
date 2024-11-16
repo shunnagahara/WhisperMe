@@ -1,4 +1,4 @@
-import { DocumentReference, deleteDoc, doc, updateDoc, CollectionReference, onSnapshot, query, orderBy, limit, QuerySnapshot  } from "firebase/firestore";
+import { DocumentReference, deleteDoc, doc, updateDoc, addDoc, serverTimestamp, CollectionReference, onSnapshot, query, orderBy, limit, QuerySnapshot  } from "firebase/firestore";
 import { ChatLog } from "../../constants/types/chatLog";
 /**
  * BeforeUnloadイベントでFirestoreのユーザー情報を削除する
@@ -85,10 +85,7 @@ export const fetchChatMessages = (
   return onSnapshot(q, (snapshot: QuerySnapshot) => {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "added") {
-        // 初回ロードを無視
-        if (isInitialMount.current) {
-          return;
-        }
+        if (isInitialMount.current) return;
 
         const data = change.doc.data();
         if (
@@ -109,8 +106,41 @@ export const fetchChatMessages = (
         setChatLogs((prevLogs) => [...prevLogs, log]);
       }
     });
-
-    // 初回ロード完了後にフラグをオフにする
     isInitialMount.current = false;
   });
+};
+
+/**
+ * メッセージ送信処理
+ * @param messagesRef Firestoreのメッセージコレクション参照
+ * @param userRef Firestoreのユーザードキュメント参照
+ * @param userName 送信者の名前
+ * @param message メッセージ内容
+ * @param modalOpenFlag モーダルオープンフラグ
+ * @param resetInput 入力欄リセット用関数
+ */
+export const submitMsg = async (
+  messagesRef: CollectionReference,
+  userRef: DocumentReference,
+  userName: string,
+  modalOpenFlag: boolean,
+  resetInput: () => void,
+  message?: string,
+  substituteMessage?: string
+): Promise<void> => {
+
+  const properMessage = (message)? message : substituteMessage
+
+  await addDoc(messagesRef, {
+    name: userName,
+    msg: properMessage,
+    date: new Date().getTime(),
+    modalOpenFlag,
+  });
+
+  // ユーザーの`lastUpdated`フィールドを更新
+  await updateDoc(userRef, { lastUpdated: serverTimestamp() });
+
+  // 入力欄をリセット
+  resetInput();
 };

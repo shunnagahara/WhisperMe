@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from './../firebaseConfig';
-import { doc, setDoc, deleteDoc, collection, onSnapshot, addDoc, updateDoc, QuerySnapshot, query, orderBy, limit, serverTimestamp, } from 'firebase/firestore';
+import { doc, setDoc, collection, serverTimestamp, } from 'firebase/firestore';
 import NameIcon from './../components/NameIcon';
 import Modal from './../components/Modal';
 import { ChatLog } from './../constants/types/chatLog';
 import { fetchUserFromWebStorage } from './../repository/webstorage/user'
-import { handleBeforeUnload, handleCountdown, fetchChatMessages } from '../service/model/chatPageService';
+import { handleBeforeUnload, handleCountdown, fetchChatMessages, submitMsg } from '../service/model/chatPageService';
 import './../css/ChatPage.css';
 import './../css/Modal.css';
 
@@ -36,37 +36,16 @@ const ChatPage: React.FC = () => {
     [room]
   );
 
-  const closeWithoutSending = () => {
-    setIsModalOpen(false);
-    setCountdown(10);
-  };
-
-  /**
-   * メッセージ送信
-   */
-  const submitMsg = async (argMsg?: string, modalOpenFlag: boolean = true) => {
-    const message = argMsg || inputMsg;
-    if (!message) {
-      return;
-    }
-
-    if (message === "愛してます") {
-      modalOpenFlag = false
-    }
-
-    await addDoc(messagesRef, {
-      name: user.name,
-      msg: message,
-      date: new Date().getTime(),
-      modalOpenFlag: modalOpenFlag,
-    });
-
-    // ユーザーのlastUpdatedフィールドを更新
-    await updateDoc(userRef, { lastUpdated: serverTimestamp() });
-
-    setInputMsg('');
-  };
-
+  useEffect(() => {
+    setDoc(userRef, { ...user, lastUpdated: serverTimestamp() }, { merge: true });
+    const unloadListener = handleBeforeUnload(userRef);
+    window.addEventListener("beforeunload", unloadListener);
+    modalTimer.current = setInterval(() => setIsModalOpen(true), 30000); // 5分おき
+    return () => {
+      if (modalTimer.current) clearInterval(modalTimer.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   useEffect(() => {
@@ -81,17 +60,6 @@ const ChatPage: React.FC = () => {
   }, [countdown]);
 
   useEffect(() => {
-    const unloadListener = handleBeforeUnload(userRef);
-    window.addEventListener("beforeunload", unloadListener);
-    // ルームに入った際にユーザー情報を追加
-    setDoc(userRef, { ...user, lastUpdated: serverTimestamp() }, { merge: true });
-    modalTimer.current = setInterval(() => setIsModalOpen(true), 30000); // 5分おき
-    return () => {
-      if (modalTimer.current) clearInterval(modalTimer.current);
-    };
-  }, [user, userRef]);
-
-  useEffect(() => {
     const unsubscribe = fetchChatMessages(
       messagesRef,
       setChatLogs,
@@ -103,17 +71,27 @@ const ChatPage: React.FC = () => {
     return () => unsubscribe(); // クリーンアップ
   }, [messagesRef, user.name]);
 
+  const handleSend = async (inputMessage: string, substituteMessage?:string) => {
+    const modalOpenFlag = inputMsg !== "愛してます";
+    await submitMsg(messagesRef, userRef, user.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage);
+  };
+
   // モーダルを閉じるときにメッセージを送信する関数
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    submitMsg("愛してます", false); // チャットに「愛してます」を送信
+    handleSend("", "愛してます");
     setCountdown(10);
   };
 
   // モーダルを閉じてメッセージを送信
   const handleLoveConfessionSend = () => {
     setIsLoveConfessionModalOpen(false);
-    submitMsg("私も愛してます"); // チャットに「私も愛してます」を送信
+    handleSend("", "私も愛してます");
+  };
+
+  const closeWithoutSending = () => {
+    setIsModalOpen(false);
+    setCountdown(10);
   };
 
   return (
@@ -132,10 +110,8 @@ const ChatPage: React.FC = () => {
                 />
               </div>
               <div style={{ marginLeft: '3px' }}>
-                {/* {item.name} */}
                 <p className="says">{item.msg}</p>
               </div>
-              {/* {userName === item.name ? '' : `[${formatHHMM(item.date)}]`} */}
             </div>
           ))}
         </div>
@@ -146,7 +122,7 @@ const ChatPage: React.FC = () => {
             className="chatform"
             onSubmit={async (e) => {
               e.preventDefault();
-              await submitMsg();
+              await handleSend(inputMsg);
             }}
           >
             <div>{user.name}</div>
