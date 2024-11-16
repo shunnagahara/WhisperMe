@@ -1,5 +1,7 @@
-import { DocumentReference, deleteDoc, doc, updateDoc, addDoc, serverTimestamp, CollectionReference, onSnapshot, query, orderBy, limit, QuerySnapshot  } from "firebase/firestore";
+import { DocumentReference, doc, CollectionReference, onSnapshot, query, orderBy, limit, QuerySnapshot  } from "firebase/firestore";
 import { ChatLog } from "../../constants/types/chatLog";
+import { deleteActiveUser, updateLastUpdated } from "../../repository/firestore/activeUser";
+import { updateMessageModalFlag, addMessage } from "../../repository/firestore/message";
 /**
  * BeforeUnloadイベントでFirestoreのユーザー情報を削除する
  * @param userRef Firestoreのユーザードキュメント参照
@@ -7,8 +9,8 @@ import { ChatLog } from "../../constants/types/chatLog";
  */
 export const handleBeforeUnload = (userRef: DocumentReference) => {
   return (event: BeforeUnloadEvent) => {
-    deleteDoc(userRef).catch((error) => {
-      console.error("Failed to delete user document:", error);
+    deleteActiveUser(userRef).catch((error) => {
+      console.error("Error occurred during beforeunload:", error);
     });
     event.preventDefault();
   };
@@ -57,9 +59,9 @@ export const handleOpenModal = async (
     // モーダルを開く
     setIsLoveConfessionModalOpen(true);
 
-    // `modalOpenFlag` を `true` に更新
     const messageDoc = doc(messagesRef, messageId);
-    await updateDoc(messageDoc, { modalOpenFlag: true });
+    await updateMessageModalFlag(messageDoc, true);
+
   } catch (error) {
     console.error("Failed to open modal and update modalOpenFlag:", error);
   }
@@ -76,7 +78,7 @@ export const handleOpenModal = async (
 export const fetchChatMessages = (
   messagesRef: CollectionReference,
   setChatLogs: React.Dispatch<React.SetStateAction<ChatLog[]>>,
-  setIsLoveConfessionModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsReplyModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   userName: string,
   isInitialMount: React.MutableRefObject<boolean>
 ) => {
@@ -87,14 +89,10 @@ export const fetchChatMessages = (
       if (change.type === "added") {
         if (isInitialMount.current) return;
 
-        const data = change.doc.data();
-        if (
-          data.msg === "愛してます" &&
-          userName !== data.name &&
-          data.modalOpenFlag === false
-        ) {
+        const data = change.doc.data() as ChatLog;
+        if (isLoveConfessionMessage(data, userName)) {
           // モーダルを開く処理を呼び出し
-          handleOpenModal(messagesRef, change.doc.id, setIsLoveConfessionModalOpen);
+          handleOpenModal(messagesRef, change.doc.id, setIsReplyModalOpen);
         }
 
         // 初回以降にリアルタイムで追加されるメッセージのみを表示
@@ -131,7 +129,7 @@ export const submitMsg = async (
 
   const properMessage = (message)? message : substituteMessage
 
-  await addDoc(messagesRef, {
+  await addMessage(messagesRef, {
     name: userName,
     msg: properMessage,
     date: new Date().getTime(),
@@ -139,8 +137,25 @@ export const submitMsg = async (
   });
 
   // ユーザーの`lastUpdated`フィールドを更新
-  await updateDoc(userRef, { lastUpdated: serverTimestamp() });
+  await updateLastUpdated(userRef)
 
   // 入力欄をリセット
   resetInput();
+};
+
+/**
+ * メッセージが特定条件を満たすかどうかを判定する
+ * @param messageData メッセージのデータ
+ * @param currentUserName 現在のユーザー名
+ * @returns 条件を満たす場合は`true`、それ以外は`false`
+ */
+export const isLoveConfessionMessage = (
+  messageData: ChatLog,
+  currentUserName: string
+): boolean => {
+  return (
+    messageData.msg === "愛してます" &&
+    messageData.name !== currentUserName &&
+    messageData.modalOpenFlag === false
+  );
 };

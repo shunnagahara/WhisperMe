@@ -1,6 +1,7 @@
 export type ChatLog = {
-  key: string;
+  key?: string;
   name: string;
   msg: string;
-  date: Date;
+  date: Date | number;
+  modalOpenFlag?: boolean;
 };
