@@ -1,0 +1,126 @@
+.container {
+  background-image: url('https://pa-tu.work/storage/img/posts/651682bc9fa7e.jpg');
+  background-size: cover;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 9rem;
+  z-index: 0;
+  flex-wrap: wrap;
+}
+
+.card {
+  position: relative; /* ハートを絶対位置で配置するため */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  border: 2px solid rgba(255, 255, 255, .3);
+  background: rgba(232, 255, 255, .5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, .37);
+  background-clip: border-box;
+  border-radius: 0.5rem;
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+  transition: .5s;
+  width: 250px;
+}
+
+
+.card-image {
+  margin: 2rem;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.card-link {
+  color: #333;
+  text-decoration: none;
+}
+
+.card-link:hover .card {
+  box-shadow: 0 8px 32px 0 #353535;
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+}
+
+
+.card-box {
+  padding: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.card-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.card-description {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* ハートと吹き出しのコンテナ */
+.card-heart-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+/* ハートアイコン */
+.card-heart {
+  font-size: 1.5rem;
+  color: red;
+  cursor: pointer; /* ホバーしやすく */
+}
+
+/* 吹き出し */
+.card-heart-tooltip {
+  display: none; /* 初期状態は非表示 */
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+}
+
+/* 吹き出しの三角形 */
+.card-heart-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+/* ホバー時に吹き出しを表示 (PC用) */
+.card-heart-container:hover .card-heart-tooltip {
+  display: block;
+}
+
+/* SP用：クリックで表示 */
+.card-heart-tooltip.visible {
+  display: block; /* 状態によって表示 */
+}
