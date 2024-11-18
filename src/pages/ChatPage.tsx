@@ -15,8 +15,9 @@ import {
 } from '../service/model/chatPageService';
 import { ChatLog } from './../constants/types/chatLog';
 import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE } from '../constants/common';
-import NameIcon from './../components/NameIcon';
 import Modal from './../components/Modal';
+import Balloon from './../components/Balloon';
+import Announcement from './../components/Announcement';
 import './../css/ChatPage.css';
 import './../css/Modal.css';
 
@@ -106,24 +107,14 @@ const ChatPage: React.FC = () => {
         <div className="chatroom-logs-container">
         {chatLogs.map((item) =>
           !item.announceFlag ? (
-            <div
-              className={`balloon_${user.name === item.name ? 'r' : 'l'}`}
+            <Balloon
               key={item.key}
-            >
-              <div className="faceicon">
-                <NameIcon
-                  userName={item.name}
-                  option={{ foreColor: user.name === item.name ? '#69C' : '#969' }}
-                />
-              </div>
-              <div style={{ marginLeft: '3px' }}>
-                <p className="says">{item.msg}</p>
-              </div>
-            </div>
+              userName={item.name}
+              message={item.msg}
+              isCurrentUser={user.name === item.name}
+            />
           ) : user.name !== item.name ?(
-            <div key={item.key} className='chatroom-logs-announce-container'>
-              <p className='chatroom-logs-announce-message'>{item.msg}</p>
-            </div>
+            <Announcement key={item.key} message={item.msg} />
           ): null
         )}
         </div>
