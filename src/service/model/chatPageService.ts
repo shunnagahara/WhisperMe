@@ -14,7 +14,7 @@ import { db } from './../../firebaseConfig';
 import { ChatLog } from "../../constants/types/chatLog";
 import { deleteActiveUser, updateLastUpdated } from "../../repository/firestore/activeUser";
 import { addMessage, updateMessageModalFlag } from "../../repository/firestore/message";
-import { CONFESSION_MESSAGE } from "../../constants/common";
+import { CONFESSION_MESSAGE, FIVE_MINUTES } from "../../constants/common";
 import { fetchActiveUserNumber } from "../../repository/firestore/activeUser";
 
 
@@ -164,19 +164,20 @@ export const isLoveConfessionMessage = (
 };
 
 /**
- * モーダルを一定時間ごとに開くタイマーを設定
- * @param setIsConfessionModalOpen モーダルを開く状態を更新する関数
+ * 告白モーダルを一定時間ごとに開くタイマーを設定
+ * @param setIsConfessionModalOpen 告白モーダルを開く状態を更新する関数
  * @param intervalRef タイマーIDを保持するRef
  * @param intervalTime タイマーの間隔（ミリ秒単位、デフォルト: 30000ミリ秒）
  */
-export const startModalTimer = (
+export const startConfessionModalTimer = (
   setIsConfessionModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   intervalRef: React.MutableRefObject<NodeJS.Timeout | null>,
-  intervalTime: number = 300000
+  roomId: string
 ) => {
-  intervalRef.current = setInterval(() => {
-    setIsConfessionModalOpen(true);
-  }, intervalTime);
+  intervalRef.current = setInterval(async () => {
+    const activeUserNumber = await fetchActiveUserNumber(roomId);
+    if(activeUserNumber === 2) setIsConfessionModalOpen(true);
+  }, FIVE_MINUTES);
 };
 
 /**

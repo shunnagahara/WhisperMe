@@ -9,7 +9,7 @@ import {
   handleCountdown,
   fetchChatMessages,
   submitMsg,
-  startModalTimer,
+  startConfessionModalTimer,
   clearModalTimer,
   saveEnterTheRoomAnnounceMessage,
 } from '../service/model/chatPageService';
@@ -44,9 +44,15 @@ const ChatPage: React.FC = () => {
     activeUser();
     const saveEnter = async () => {await saveEnterTheRoomAnnounceMessage(messagesRef, room, user.name);};
     saveEnter();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+  useEffect(() => {
     const unloadListener = handleBeforeUnload(userRef);
     window.addEventListener("beforeunload", unloadListener);
-    startModalTimer(setIsConfessionModalOpen, modalTimer);
+
+    startConfessionModalTimer(setIsConfessionModalOpen, modalTimer, room);
     return () => {
       clearModalTimer(modalTimer);
     };
