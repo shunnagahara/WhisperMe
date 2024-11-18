@@ -115,7 +115,9 @@ const ChatPage: React.FC = () => {
               </div>
             </div>
           ) : user.name !== item.name ?(
-            <div key={item.key}>test</div>
+            <div key={item.key} className='chatroom-logs-announce-container'>
+              <p className='chatroom-logs-announce-message'>{item.msg}</p>
+            </div>
           ): null
         )}
         </div>

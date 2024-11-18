@@ -88,3 +88,15 @@ body {
   margin-left: 5px;
   vertical-align: middle;
 }
+
+.chatroom-logs-announce-container {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.chatroom-logs-announce-message {
+  padding: 10px 20px;
+  background-color: aquamarine;
+  border-radius: 5px;
+  border: dashed;
+}
