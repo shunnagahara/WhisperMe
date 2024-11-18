@@ -43,7 +43,7 @@ const ChatRoomList: React.FC = () => {
             title={`Room ${room.id}`}
             description={
               room.userCount > 0
-                ? `ユーザー数: ${room.userCount}`
+                ? `入室ユーザー数: ${room.userCount}`
                 : 'ユーザーなし'
             }
             matchingRate={

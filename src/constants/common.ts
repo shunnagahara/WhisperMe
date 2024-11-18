@@ -3,7 +3,7 @@ export const ageRangeOptions         = ["18 - 25", "25 - 30", "30 - 40", "40 - 5
 export const maleAppearanceOptions   = ['爽やか系', 'ワイルド系', '韓国系'];
 export const femaleAppearanceOptions = ['かわいい系', 'キレイ系', 'かわキレイ系'];
 
-export const roomNumbers = ["1", "2", "3", "4", "5", "6"];
+export const roomNumbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
 export const CONFESSION_MESSAGE       = "愛してます";
 export const CONFESSION_REPLY_MESSAGE = "私も愛してます";
