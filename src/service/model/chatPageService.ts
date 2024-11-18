@@ -91,10 +91,6 @@ export const fetchChatMessages = (
   userName: string,
   isInitialMount: React.MutableRefObject<boolean>
 ) => {
-  if (isInitialMount.current) {
-    isInitialMount.current = false;
-    return;
-  }
   const q = query(messagesRef, orderBy("date", "desc"), limit(10));
   return onSnapshot(q, (snapshot: QuerySnapshot) => {
     snapshot.docChanges().forEach((change) => {
@@ -112,6 +108,7 @@ export const fetchChatMessages = (
         setChatLogs((prevLogs) => [...prevLogs, log]);
       }
     });
+    isInitialMount.current = false;
   });
 };
 

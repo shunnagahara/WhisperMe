@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './../css/chatRoomCard.css'
 
 type ChatRoomCardProps = {
@@ -19,7 +20,7 @@ const ChatRoomCard: React.FC<ChatRoomCardProps> = ({ title, description, image, 
   };
 
   return (
-    <a href={link} className="card-link">
+    <Link to={link} className="card-link">
         <div className="card pic-image">
             {showHeart ? (
                 <div 
@@ -38,7 +39,7 @@ const ChatRoomCard: React.FC<ChatRoomCardProps> = ({ title, description, image, 
                 <p className="card-description">{description}</p>
             </div>
         </div>
-    </a>
+    </Link>
 )};
 
 export default ChatRoomCard;
