@@ -1,9 +1,27 @@
-import { User } from "../../constants/types/user"; // User型を適切なパスからインポート
-import { fetchUserFromWebStorage, saveUserToWebStorage } from "../../repository/webstorage/user";
+import { User } from "../../constants/types/user";
+import { fetchProfile, saveProfile } from "../../repository/webstorage/user";
 import { errorMessages } from "../../constants/common";
 import { NavigateFunction } from 'react-router-dom';
 
-  export const validateInputs = (profile: User) => {
+/**
+ * ユーザープロフィールの入力値を検証します。
+ *
+ * @param {User} profile - 検証対象のユーザープロフィールオブジェクト。
+ * 
+ * @returns {{ [key: string]: string }} エラーのオブジェクト。プロパティごとにエラーメッセージを格納します。
+ * 
+ * ### 検証内容:
+ * - `name`: 空白が含まれていないかを確認。
+ * - `gender`: 性別が選択されているかを確認。
+ * - `ageRange`: 年齢範囲が設定されているかを確認。
+ * - `personalities`: 性格リストが空でないかを確認。
+ * - `appearance`: 性別が選択されている場合、外見が設定されているかを確認。
+ * - `targetGender`: 対象の性別が設定されているかを確認。
+ * - `favoriteAgeRange`: 好みの年齢範囲が設定されているかを確認。
+ * - `selectedPersonalities`: 選択した性格が空でないかを確認。
+ * - `favoriteAppearance`: 性別が選択されている場合、好みの外見が設定されているかを確認。
+ */
+  export const validateProfileInputs = (profile: User) => {
     const newErrors: { [key: string]: string } = {};
 
     if (!profile.name.trim()) newErrors.name                                        = errorMessages.name.required;
@@ -19,34 +37,66 @@ import { NavigateFunction } from 'react-router-dom';
     return newErrors;
   };
 
-  export const isUserDataComplete = () => {
-    const storedUserData = fetchUserFromWebStorage();
+
+/**
+ * ユーザーデータが既に存在するかをチェックします。
+ *
+ * @returns {boolean} ユーザーデータが完全に揃っている場合は `true` を返します。それ以外は `false`。
+ *
+ */
+  export const isUserProfileExists = () => {
+    const storedUserData = fetchProfile();
     if (storedUserData) {
       return storedUserData.name && storedUserData.gender && storedUserData.ageRange && storedUserData.personalities && storedUserData.appearance && storedUserData.targetGender && storedUserData.favoriteAppearance && storedUserData.selectedPersonalities && storedUserData.favoriteAgeRange;
     }
     return false;
   };
 
+/**
+ * 入力値を検証し、次のページへ遷移する処理を実行します。
+ *
+ * @param {User} profile - ユーザープロフィールオブジェクト。
+ * @param {(errors: { [key: string]: string }) => void} setErrors - エラーを設定する関数。
+ * @param {(path: string) => void} navigate - ページ遷移を実行する関数。
+ * 
+ * ### 処理内容:
+ * 1. 入力値を `validateInputs` 関数で検証します。
+ * 2. 検証エラーがある場合は `setErrors` でエラーを設定します。
+ * 3. 検証エラーがない場合:
+ *    - プロフィールをローカルストレージに保存。
+ *    - `/list` ページへ遷移。
+ */
   export const handleNext = (
     profile: User,
     setErrors: (errors: { [key: string]: string }) => void,
     navigate: (path: string) => void
   ) => {
-    const validationErrors = validateInputs(profile);
+    const validationErrors = validateProfileInputs(profile);
     setErrors(validationErrors);
   
     if (Object.keys(validationErrors).length === 0) {
-      saveUserToWebStorage(profile)
+      saveProfile(profile)
       navigate("/list");
     }
   };
 
-  export const handleModalClose = (
-    setShowModal: (show: boolean) => void,
+/**
+ * スキップモーダルを閉じ、必要に応じてチャットルーム一覧ページに遷移します。
+ *
+ * @param {(show: boolean) => void} setShowSkipModal - スキップモーダル表示状態を設定する関数。
+ * @param {NavigateFunction} navigate - ページ遷移を実行する関数。
+ * @param {boolean} navigateToChat - チャットルーム一覧ページに遷移するかどうかを指定するフラグ。
+ * 
+ * ### 処理内容:
+ * 1. モーダルを非表示に設定。
+ * 2. `navigateToChat` が `true` の場合、`/list` ページへ遷移。
+ */
+  export const handleSkipModalClose = (
+    setShowSkipModal: (show: boolean) => void,
     navigate: NavigateFunction,
     navigateToChat: boolean
   ) => {
-    setShowModal(false);
+    setShowSkipModal(false);
     if (navigateToChat) {
       navigate('/list'); // Navigate to chat room list if user agrees
     }

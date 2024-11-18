@@ -4,17 +4,15 @@ import {
   DocumentReference,
   QuerySnapshot,
   doc,
-  collection,
   limit,
   onSnapshot,
   orderBy,
   query,
 } from "firebase/firestore";
-import { db } from './../../firebaseConfig';
 import { ChatLog } from "../../constants/types/chatLog";
 import { deleteActiveUser, updateLastUpdated } from "../../repository/firestore/activeUser";
 import { addMessage, updateMessageModalFlag } from "../../repository/firestore/message";
-import { CONFESSION_MESSAGE, FIVE_MINUTES } from "../../constants/common";
+import { CONFESSION_MESSAGE, FIVE_MINUTES, ONE_SECOND } from "../../constants/common";
 import { fetchActiveUserNumber } from "../../repository/firestore/activeUser";
 
 
@@ -46,7 +44,7 @@ export const handleCountdown = (
   if (isModalOpen) {
     countdownTimer.current = setInterval(() => {
       setCountdown((prev) => prev - 1);
-    }, 1000);
+    }, ONE_SECOND);
   } else {
     if (countdownTimer.current) {
       clearInterval(countdownTimer.current);

@@ -3,7 +3,7 @@ import { db } from './../../firebaseConfig';
 import { User } from './../../constants/types/user';
 import { RoomInfo } from '../../constants/types/roomInfo';
 import { roomNumbers } from './../../constants/common';
-import { fetchActiveUserFromFirestore } from '../../repository/firestore/activeUser';
+import { fetchActiveUser } from '../../repository/firestore/activeUser';
 
 
 type RoomSubscriptionArgs = {
@@ -12,6 +12,18 @@ type RoomSubscriptionArgs = {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+
+/**
+ * チャットルームの情報をリアルタイムで更新します。
+ *
+ * @param {RoomSubscriptionArgs} args - 監視に必要な引数。
+ * @param {User} args.storedUser - 現在のユーザー情報。
+ * @param {React.Dispatch<React.SetStateAction<RoomInfo[]>>} args.setRooms - ルーム情報を更新するための関数。
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} args.setIsLoading - ローディング状態を更新するための関数。
+ *
+ * @returns {() => void} 監視を停止するための関数。
+ *
+ */
 export const subscribeToRooms = ({
   storedUser,
   setRooms,
@@ -22,7 +34,7 @@ export const subscribeToRooms = ({
     const activeUsersRef = collection(db, "chatroom", roomId, "activeUsers");
 
     return onSnapshot(activeUsersRef, async (snapshot) => {
-      const user: User | null = await fetchActiveUserFromFirestore(snapshot);
+      const user: User | null = await fetchActiveUser(snapshot);
 
       setRooms((prevRooms) => {
         const userCount = snapshot.size;
@@ -43,6 +55,15 @@ export const subscribeToRooms = ({
   return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
 };
 
+/**
+ * 2人のユーザー間のマッチング率を計算します。
+ *
+ * @param {User} user - 比較対象のユーザー情報。
+ * @param {User} storedUser - 現在のユーザー情報。
+ * 
+ * @returns {number} マッチング率（0〜100の整数値）。
+ *
+ */
 export const calculateMatchingRate = (user: User, storedUser: User): number => {
   let matchCount = 0;
   let totalAttributes = 0;

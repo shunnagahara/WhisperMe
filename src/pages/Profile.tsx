@@ -4,7 +4,7 @@ import { ReactComponent as MaleIcon } from './../assets/icons/male.svg';
 import { ReactComponent as FemaleIcon } from './../assets/icons/female.svg';
 import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './../constants/common';
 import { User } from './../constants/types/user';
-import { isUserDataComplete, handleNext, handleModalClose } from './../service/presentation/profileService';
+import { isUserProfileExists, handleNext, handleSkipModalClose } from './../service/presentation/profileService';
 import { calculateProgress } from './../service/model/profileService';
 import Modal from './../components/Modal';
 import ProgressBar from './../components/ProgressBar';
@@ -25,7 +25,7 @@ const Profile: React.FC = () => {
     favoriteAgeRange: ''
   });
   const [progress, setProgress]   = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const [showSkipModal, setShowSkipModal] = useState(false);
   const [errors, setErrors]       = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isUserDataComplete()) setShowModal(true);
+    if (isUserProfileExists()) setShowSkipModal(true);
   }, []);
 
   useEffect(() => {
@@ -51,15 +51,17 @@ const Profile: React.FC = () => {
     <div className="profile-container">
 
       <Modal
-        show={showModal}
-        handleClose={() => handleModalClose(setShowModal, navigate, false)}
+        show={showSkipModal}
+        handleClose={() => handleSkipModalClose(setShowSkipModal, navigate, false)}
         title="プロフィールが保存されています"
         message="保存されたプロフィールでチャットルームに移動しますか？"
       >
-        <button className="modal-button modal-button-confirm" onClick={() => handleModalClose(setShowModal, navigate, true)}>はい</button>
-        <button className="modal-button modal-button-cancel" onClick={() => handleModalClose(setShowModal, navigate, false)}>いいえ</button>
+        <button className="modal-button modal-button-confirm" onClick={() => handleSkipModalClose(setShowSkipModal, navigate, true)}>はい</button>
+        <button className="modal-button modal-button-cancel" onClick={() => handleSkipModalClose(setShowSkipModal, navigate, false)}>いいえ</button>
       </Modal>
+
       <ProgressBar progress={progress} />
+
       <div className="profile-card">
 
         <div className="profile-input-container input-name">

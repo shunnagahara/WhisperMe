@@ -2,7 +2,7 @@ import { addDoc, CollectionReference, DocumentReference, updateDoc } from "fireb
 import { ChatLog } from "../../constants/types/chatLog";
 
 /**
- * メッセージドキュメントの`modalOpenFlag`を更新
+ * Firestoreのメッセージドキュメントの`modalOpenFlag`を更新
  * @param messageRef Firestoreのメッセージドキュメント参照
  * @param modalOpenFlag 更新するモーダルオープンフラグの値
  */

@@ -1,6 +1,13 @@
-// src/utils/calculateProgress.ts
 import { User } from "../../constants/types/user";
 
+/**
+ * ユーザープロフィールの入力進捗率を計算します。
+ *
+ * @param {User} profile - 進捗を計算する対象のユーザープロフィールオブジェクト。
+ * 
+ * @returns {number} 入力進捗率（0〜100の整数値）。
+ *
+ */
 export const calculateProgress = (profile: User): number => {
   const totalItems = Object.keys(profile).length;
 

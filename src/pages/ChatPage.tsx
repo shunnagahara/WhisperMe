@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, collection } from 'firebase/firestore';
 import { db } from './../firebaseConfig';
-import { fetchUserFromWebStorage } from './../repository/webstorage/user';
+import { fetchProfile } from './../repository/webstorage/user';
 import { setActiveUser } from '../repository/firestore/activeUser';
 import {
   handleBeforeUnload,
@@ -14,7 +14,7 @@ import {
   saveEnterTheRoomAnnounceMessage,
 } from '../service/model/chatPageService';
 import { ChatLog } from './../constants/types/chatLog';
-import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE } from '../constants/common';
+import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE, TEN_SECONDS } from '../constants/common';
 import Modal from './../components/Modal';
 import Balloon from './../components/Balloon';
 import Announcement from './../components/Announcement';
@@ -26,14 +26,14 @@ import './../css/Modal.css';
 const ChatPage: React.FC = () => {
   const [chatLogs, setChatLogs]                           = useState<ChatLog[]>([]);
   const [inputMsg, setInputMsg]                           = useState('');
-  const [countdown, setCountdown]                         = useState(10);
+  const [countdown, setCountdown]                         = useState(TEN_SECONDS);
   const isInitialMount                                    = useRef(true);
   const hasRun                                            = useRef(false);
   const [isConfessionModalOpen, setIsConfessionModalOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen]           = useState(false);
   const modalTimer     = useRef<NodeJS.Timeout | null>(null);
   const countdownTimer = useRef<NodeJS.Timeout | null>(null);
-  const user        = useMemo(() => fetchUserFromWebStorage(), []);
+  const user        = useMemo(() => fetchProfile(), []);
   const { room }    = useParams<{ room: string }>();
   const roomRef     = collection(db, 'chatroom', room, 'activeUsers');
   const userRef     = doc(roomRef, user.name); 
@@ -89,7 +89,7 @@ const ChatPage: React.FC = () => {
   const handleCloseConfessionModal = () => {
     setIsConfessionModalOpen(false);
     handleSend("", CONFESSION_MESSAGE);
-    setCountdown(10);
+    setCountdown(TEN_SECONDS);
   };
 
   const handleReplySend = () => {
@@ -99,7 +99,7 @@ const ChatPage: React.FC = () => {
 
   const closeWithoutSending = () => {
     setIsConfessionModalOpen(false);
-    setCountdown(10);
+    setCountdown(TEN_SECONDS);
   };
 
   return (

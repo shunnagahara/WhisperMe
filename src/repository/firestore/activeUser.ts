@@ -3,23 +3,20 @@ import { db } from './../../firebaseConfig';
 import { User } from "../../constants/types/user";
 
 /**
- * Firestoreのスナップショットから最初のユーザーデータを取得
+ * Firestoreからアクティブユーザーデータを取得
  * @param snapshot FirestoreのQuerySnapshot
- * @returns 最初のUserオブジェクト、またはnull
+ * @returns Userオブジェクト、またはnull
  */
-export const fetchActiveUserFromFirestore = async (
+export const fetchActiveUser = async (
   snapshot: QuerySnapshot<DocumentData>
 ): Promise<User | null> => {
-  if (snapshot.empty) {
-    return null; // スナップショットが空の場合はnullを返す
-  }
-
-  const firstDoc = snapshot.docs[0]; // 最初のドキュメントを取得
-  return firstDoc.data() as User; // ドキュメントのデータをUser型として返す
+  if (snapshot.empty) return null;
+  const firstDoc = snapshot.docs[0];
+  return firstDoc.data() as User;
 };
 
 /**
- * Firestoreのスナップショットからアクティブユーザー数を取得
+ * Firestoreからアクティブユーザー数を取得
  * @param snapshot FirestoreのQuerySnapshot
  * @param roomId ルームナンバー
  * @returns activeUserの数
@@ -32,7 +29,7 @@ export const fetchActiveUserNumber = async (roomId:string) : Promise<number> => 
 
 
 /**
- * Firestoreのユーザーデータを更新
+ * Firestoreのアクティブユーザーデータを保存
  * @param userRef Firestoreのユーザードキュメント参照
  * @param user 更新するユーザー情報
  */
@@ -53,9 +50,8 @@ export const setActiveUser = async (
 };
 
 /**
- * Firestoreのユーザーデータを更新
+ * Firestoreのアクディブユーザーデータの最終日時を更新
  * @param userRef Firestoreのユーザードキュメント参照
- * @param user 更新するユーザー情報
  */
 export const updateLastUpdated = async (
   userRef: DocumentReference,
