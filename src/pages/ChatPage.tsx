@@ -18,6 +18,7 @@ import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE } from '../constants/commo
 import Modal from './../components/Modal';
 import Balloon from './../components/Balloon';
 import Announcement from './../components/Announcement';
+import ChatInputBox from './../components/ChatInputBox';
 import './../css/ChatPage.css';
 import './../css/Modal.css';
 
@@ -119,28 +120,7 @@ const ChatPage: React.FC = () => {
         )}
         </div>
 
-        <div className="chatbox">
-          <form
-            className="chatform"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              await handleSend(inputMsg);
-            }}
-          >
-            <div>{user.name}</div>
-            <input
-              type="text"
-              value={inputMsg}
-              onChange={(e) => setInputMsg(e.target.value)}
-            />
-            <input
-              type="image"
-              onClick={() => submitMsg}
-              src="../img/airplane.png"
-              alt="Send Button"
-            />
-          </form>
-        </div>
+        <ChatInputBox userName={user.name} onSendMessage={handleSend} />
 
         <Modal show={isConfessionModalOpen} handleClose={handleCloseConfessionModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
           <input className="modal-input" type="text" value={CONFESSION_MESSAGE} readOnly />
