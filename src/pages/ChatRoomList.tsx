@@ -5,7 +5,6 @@ import { isRoomAvailable, fetchRoomImage } from './../service/presentation/chatR
 import { fetchProfile } from '../repository/webstorage/user';
 import { RoomInfo } from './../constants/types/roomInfo';
 import Loading from './../components/Loading';
-import { ROOM_AVAILABLE_IMAGE_PATH, ROOM_DISABLE_IMAGE_PATH } from './../constants/common'
 import './../css/chatRoomList.css';
 
 

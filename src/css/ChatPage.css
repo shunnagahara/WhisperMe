@@ -1,4 +1,6 @@
-/* https://stand-4u.com/css/fukidashi.html */
+.chatroom-logs-container {
+  padding: 0px 5px;
+}
 
 /* 吹き出し */
 .balloon_l,
@@ -74,14 +76,11 @@
   border-left: 22px solid #9dd;
 }
 
-body {
-  background-color: mintcream;
-}
-
 /* 追加分(form) */
 .chatform input[type='text'] {
-  width: 300px;
+  width: 230px;
   font-size: 13pt;
+  border-radius: 5px;
 }
 
 .chatform input[type='image'] {
@@ -99,4 +98,16 @@ body {
   background-color: aquamarine;
   border-radius: 5px;
   border: dashed;
+}
+
+.chatbox {
+  position: fixed; /* 画面全体に固定 */
+  bottom: 0;       /* 画面の一番下に配置 */
+  left: 50%;       /* 水平方向の中心 */
+  transform: translateX(-50%); /* 中央揃え補正 */
+  width: 90%;      /* 任意: コンテナの幅を調整 */
+  max-width: 600px; /* 任意: 最大幅を設定 */
+  padding: 10px;   /* 任意: 内側の余白 */
+  z-index: 1000;   /* 他の要素の上に表示 */
+  text-align: center;
 }
