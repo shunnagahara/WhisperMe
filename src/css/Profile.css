@@ -1,10 +1,8 @@
-/* Profile.css */
-
 .profile-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    background: linear-gradient(135deg, #f0d7de, #f194b0);
     padding: 50px 0;
     align-content: flex-start;
   }

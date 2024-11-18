@@ -6,7 +6,7 @@ import { fetchProfile } from '../repository/webstorage/user';
 import { RoomInfo } from './../constants/types/roomInfo';
 import Loading from './../components/Loading';
 import { ROOM_AVAILABLE_IMAGE_PATH, ROOM_DISABLE_IMAGE_PATH } from './../constants/common'
-import './../css/ChatRoomList.css';
+import './../css/chatRoomList.css';
 
 
 const ChatRoomList: React.FC = () => {

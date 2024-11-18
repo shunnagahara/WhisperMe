@@ -19,8 +19,8 @@ import Modal from './../components/Modal';
 import Balloon from './../components/Balloon';
 import Announcement from './../components/Announcement';
 import ChatInputBox from './../components/ChatInputBox';
-import './../css/ChatPage.css';
-import './../css/Modal.css';
+import './../css/chatPage.css';
+import './../css/modal.css';
 
 
 const ChatPage: React.FC = () => {

@@ -8,7 +8,7 @@ import { isUserProfileExists, handleNext, handleSkipModalClose } from './../serv
 import { calculateProgress } from './../service/model/profileService';
 import Modal from './../components/Modal';
 import ProgressBar from './../components/ProgressBar';
-import './../css/Profile.css';
+import './../css/profile.css';
 
 
 const Profile: React.FC = () => {

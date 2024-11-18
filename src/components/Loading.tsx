@@ -1,4 +1,5 @@
 import React from "react";
+import './../css/loading.css';
 
 type LoadingProps = {
   message?: string;
