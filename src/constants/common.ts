@@ -16,3 +16,5 @@ export const errorMessages = {
 };
 export const CONFESSION_MESSAGE = "愛してます";
 export const CONFESSION_REPLY_MESSAGE = "私も愛してます";
+export const ROOM_AVAILABLE_IMAGE_PATH = '/img/room-available.jpg'
+export const ROOM_DISABLE_IMAGE_PATH = '/img/room-disable.jpg'
