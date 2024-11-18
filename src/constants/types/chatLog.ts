@@ -4,4 +4,5 @@ export type ChatLog = {
   msg: string;
   date: Date | number;
   modalOpenFlag?: boolean;
+  announceFlag?: boolean;
 };

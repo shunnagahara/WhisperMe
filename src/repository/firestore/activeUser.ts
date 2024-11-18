@@ -1,4 +1,5 @@
-import { QuerySnapshot, setDoc, updateDoc, deleteDoc, DocumentData, DocumentReference, serverTimestamp } from "firebase/firestore";
+import { collection, QuerySnapshot, setDoc, getDocs, updateDoc, deleteDoc, DocumentData, DocumentReference, serverTimestamp } from "firebase/firestore";
+import { db } from './../../firebaseConfig';
 import { User } from "../../constants/types/user";
 
 /**
@@ -15,6 +16,18 @@ export const fetchActiveUserFromFirestore = async (
 
   const firstDoc = snapshot.docs[0]; // 最初のドキュメントを取得
   return firstDoc.data() as User; // ドキュメントのデータをUser型として返す
+};
+
+/**
+ * Firestoreのスナップショットからアクティブユーザー数を取得
+ * @param snapshot FirestoreのQuerySnapshot
+ * @param roomId ルームナンバー
+ * @returns activeUserの数
+ */
+export const fetchActiveUserNumber = async (roomId:string) : Promise<number> => {
+  const activeUsersSnapshot = await getDocs(collection(db, `chatroom/${roomId}/activeUsers`));
+  if (activeUsersSnapshot.empty) return 0;
+  return activeUsersSnapshot.size
 };
 
 

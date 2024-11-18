@@ -4,15 +4,18 @@ import {
   DocumentReference,
   QuerySnapshot,
   doc,
+  collection,
   limit,
   onSnapshot,
   orderBy,
   query,
 } from "firebase/firestore";
+import { db } from './../../firebaseConfig';
 import { ChatLog } from "../../constants/types/chatLog";
 import { deleteActiveUser, updateLastUpdated } from "../../repository/firestore/activeUser";
 import { addMessage, updateMessageModalFlag } from "../../repository/firestore/message";
 import { CONFESSION_MESSAGE } from "../../constants/common";
+import { fetchActiveUserNumber } from "../../repository/firestore/activeUser";
 
 
 /**
@@ -128,7 +131,8 @@ export const submitMsg = async (
   modalOpenFlag: boolean,
   resetInput: () => void,
   message?: string,
-  substituteMessage?: string
+  substituteMessage?: string,
+  announceFlag?: boolean
 ): Promise<void> => {
   const properMessage = (message)? message : substituteMessage
   await addMessage(messagesRef, {
@@ -136,6 +140,7 @@ export const submitMsg = async (
     msg: properMessage,
     date: new Date().getTime(),
     modalOpenFlag,
+    announceFlag,
   });
   await updateLastUpdated(userRef)
   resetInput();
@@ -167,7 +172,7 @@ export const isLoveConfessionMessage = (
 export const startModalTimer = (
   setIsConfessionModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   intervalRef: React.MutableRefObject<NodeJS.Timeout | null>,
-  intervalTime: number = 30000
+  intervalTime: number = 300000
 ) => {
   intervalRef.current = setInterval(() => {
     setIsConfessionModalOpen(true);
@@ -183,4 +188,26 @@ export const clearModalTimer = (intervalRef: React.MutableRefObject<NodeJS.Timeo
     clearInterval(intervalRef.current);
     intervalRef.current = null;
   }
+};
+
+/**
+ * ユーザーが既に入室済の場合、アナウンス用メッセージを保存する
+ * @param messagesRef Firestoreのメッセージコレクション参照
+ * @param roomId ルームナンバー
+ * @param name ユーザー名
+ */
+export const saveEnterTheRoomAnnounceMessage = async (
+  messagesRef: CollectionReference,
+  roomId: string,
+  name: string
+) => {
+  const activeUserNumber = await fetchActiveUserNumber(roomId);
+  if (activeUserNumber === 1) return
+  await addMessage(messagesRef, {
+    name: name,
+    msg: 'あなたの運命の人が入室しました。',
+    date: new Date().getTime(),
+    modalOpenFlag: false,
+    announceFlag: true,
+  });
 };

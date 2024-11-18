@@ -11,6 +11,7 @@ import {
   submitMsg,
   startModalTimer,
   clearModalTimer,
+  saveEnterTheRoomAnnounceMessage,
 } from '../service/model/chatPageService';
 import { ChatLog } from './../constants/types/chatLog';
 import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE } from '../constants/common';
@@ -25,6 +26,7 @@ const ChatPage: React.FC = () => {
   const [inputMsg, setInputMsg]                           = useState('');
   const [countdown, setCountdown]                         = useState(10);
   const isInitialMount                                    = useRef(true);
+  const hasRun                                            = useRef(false);
   const [isConfessionModalOpen, setIsConfessionModalOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen]           = useState(false);
   const modalTimer     = useRef<NodeJS.Timeout | null>(null);
@@ -36,8 +38,12 @@ const ChatPage: React.FC = () => {
   const messagesRef = useMemo(() => collection(db, 'chatroom', room, 'messages'),[room]);
 
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
     const activeUser = async () => {await setActiveUser(userRef, user);};
     activeUser();
+    const saveEnter = async () => {await saveEnterTheRoomAnnounceMessage(messagesRef, room, user.name);};
+    saveEnter();
     const unloadListener = handleBeforeUnload(userRef);
     window.addEventListener("beforeunload", unloadListener);
     startModalTimer(setIsConfessionModalOpen, modalTimer);
@@ -67,9 +73,9 @@ const ChatPage: React.FC = () => {
     return () => unsubscribe();
   }, [messagesRef, user.name]);
 
-  const handleSend = async (inputMessage: string, substituteMessage?:string) => {
+  const handleSend = async (inputMessage: string, substituteMessage?:string, announceFlag:boolean  = false) => {
     const modalOpenFlag = inputMsg !== CONFESSION_MESSAGE;
-    await submitMsg(messagesRef, userRef, user.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage);
+    await submitMsg(messagesRef, userRef, user.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage, announceFlag);
   };
 
   const handleCloseConfessionModal = () => {
@@ -92,7 +98,8 @@ const ChatPage: React.FC = () => {
     <>
       <div className="chatroom-container">
         <div className="chatroom-logs-container">
-          {chatLogs.map((item) => (
+        {chatLogs.map((item) =>
+          !item.announceFlag ? (
             <div
               className={`balloon_${user.name === item.name ? 'r' : 'l'}`}
               key={item.key}
@@ -107,7 +114,10 @@ const ChatPage: React.FC = () => {
                 <p className="says">{item.msg}</p>
               </div>
             </div>
-          ))}
+          ) : user.name !== item.name ?(
+            <div key={item.key}>test</div>
+          ): null
+        )}
         </div>
 
         <div className="chatbox">

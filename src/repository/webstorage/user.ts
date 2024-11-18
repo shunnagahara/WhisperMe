@@ -1,7 +1,8 @@
 import { User } from './../../constants/types/user';
 
-  export const fetchUserFromWebStorage = (): User => {
+  export const fetchUserFromWebStorage = (): User | null => {
     const user = JSON.parse(localStorage.getItem('lovyu-user'));
+    if (!user) return null
     return {
       name: user.name,
       gender: user.gender,
@@ -16,5 +17,6 @@ import { User } from './../../constants/types/user';
   };
 
   export const saveUserToWebStorage = (profile:User) => {
+    console.log('saveUserToWebStorage')
     return localStorage.setItem("lovyu-user", JSON.stringify(profile));
   };
