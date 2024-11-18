@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ChatRoomCard from '../components/ChatRoomCard';
 import { subscribeToRooms } from './../service/model/chatRoomListService';
-import { isRoomAvailable } from './../service/presentation/chatRoomListService';
+import { isRoomAvailable, fetchRoomImage } from './../service/presentation/chatRoomListService';
 import { fetchProfile } from '../repository/webstorage/user';
 import { RoomInfo } from './../constants/types/roomInfo';
 import Loading from './../components/Loading';
@@ -51,11 +51,7 @@ const ChatRoomList: React.FC = () => {
                 ? `マッチング率 ${room.matchingRate}%`
                 : null
             }
-            image={
-              isAvailable
-                ? ROOM_AVAILABLE_IMAGE_PATH
-                : ROOM_DISABLE_IMAGE_PATH
-            }
+            image={fetchRoomImage(room.userCount)}
             showHeart={room.userCount === 1}
             link={isAvailable ? `/chat/${room.id}` : '#'}
           />

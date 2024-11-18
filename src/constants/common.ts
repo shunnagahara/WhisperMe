@@ -8,8 +8,10 @@ export const roomNumbers = ["1", "2", "3", "4", "5", "6"];
 export const CONFESSION_MESSAGE       = "愛してます";
 export const CONFESSION_REPLY_MESSAGE = "私も愛してます";
 
-export const ROOM_AVAILABLE_IMAGE_PATH = '/img/room-available.jpg'
-export const ROOM_DISABLE_IMAGE_PATH   = '/img/room-disable.jpg'
+export const ROOM_AVAILABLE_IMAGE_PATH     = '/img/room-available.png'
+export const ROOM_DISABLE_IMAGE_PATH       = '/img/room-disable.png'
+export const ROOM_SOMEBODY_IN_IMAGE_PATH   = '/img/room-somebody-in.png'
+
 
 export const FIVE_MINUTES              = 300000
 export const TEN_SECONDS               = 10
