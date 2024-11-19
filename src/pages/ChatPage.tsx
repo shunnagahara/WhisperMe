@@ -5,7 +5,7 @@ import { db } from './../firebaseConfig';
 import { fetchProfile } from './../repository/webstorage/user';
 import { setActiveUser } from '../repository/firestore/activeUser';
 import {
-  handleBeforeUnload,
+  handleRemoveActiveUser,
   handleCountdown,
   fetchChatMessages,
   submitMsg,
@@ -49,11 +49,19 @@ const ChatPage: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const handleRemoveUserListener = handleRemoveActiveUser(userRef);
+    window.addEventListener("popstate", handleRemoveUserListener);
+    window.addEventListener("beforeunload", handleRemoveUserListener);
+    return () => {
+      window.addEventListener("popstate", handleRemoveUserListener);
+      window.addEventListener("beforeunload", handleRemoveUserListener);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   useEffect(() => {
-    const unloadListener = handleBeforeUnload(userRef);
-    window.addEventListener("beforeunload", unloadListener);
-
     startConfessionModalTimer(setIsConfessionModalOpen, modalTimer, room);
     return () => {
       clearModalTimer(modalTimer);

@@ -17,11 +17,11 @@ import { fetchActiveUserNumber } from "../../repository/firestore/activeUser";
 
 
 /**
- * BeforeUnloadイベントでFirestoreのユーザー情報を削除する
+ * Firestoreのユーザー情報を削除するハンドル関数
  * @param userRef Firestoreのユーザードキュメント参照
  * @returns イベントリスナーの関数
  */
-export const handleBeforeUnload = (userRef: DocumentReference) => {
+export const handleRemoveActiveUser = (userRef: DocumentReference) => {
   return (event: BeforeUnloadEvent) => {
     deleteActiveUser(userRef).catch((error) => {
       console.error("Error occurred during beforeunload:", error);
