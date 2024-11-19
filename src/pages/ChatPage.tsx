@@ -96,6 +96,11 @@ const ChatPage: React.FC = () => {
 
   const handleCloseConfessionModal = () => {
     setIsConfessionModalOpen(false);
+    setCountdown(TEN_SECONDS);
+  };
+
+  const handleConfessionSend = () => {
+    setIsConfessionModalOpen(false);
     handleSend("", CONFESSION_MESSAGE);
     setCountdown(TEN_SECONDS);
   };
@@ -132,7 +137,7 @@ const ChatPage: React.FC = () => {
 
         <Modal show={isConfessionModalOpen} handleClose={handleCloseConfessionModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
           <input className="modal-input" type="text" value={CONFESSION_MESSAGE} readOnly />
-          <button className="modal-submit-button" onClick={handleCloseConfessionModal}>送信</button>
+          <button className="modal-submit-button" onClick={handleConfessionSend}>送信</button>
         </Modal>
 
         <Modal show={isReplyModalOpen} handleClose={() => setIsReplyModalOpen(false)} title="愛の告白" message="相手から愛の告白がありました" subMessage="あなたも思いを伝えますか？" countdown=''>
