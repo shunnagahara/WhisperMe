@@ -15,7 +15,7 @@ export const ROOM_SOMEBODY_IN_IMAGE_PATH   = '/img/room-somebody-in.png'
 
 export const FIVE_MINUTES              = 300000
 export const TEN_SECONDS               = 10
-export const ONE_SECOND                = 1
+export const ONE_SECOND                = 1000
 
 export const WEB_STORAGE_KEY = 'lovyu-user'
 
