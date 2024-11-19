@@ -157,7 +157,7 @@ export const isLoveConfessionMessage = (
   return (
     messageData.msg === CONFESSION_MESSAGE &&
     messageData.name !== currentUserName &&
-    messageData.modalOpenFlag === false
+    messageData.modalOpenFlag === true
   );
 };
 
