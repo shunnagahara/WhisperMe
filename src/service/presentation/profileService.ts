@@ -76,7 +76,7 @@ import { CHATROOM_LIST_PAGE_PATH } from "../../constants/common";
   
     if (Object.keys(validationErrors).length === 0) {
       saveProfile(profile)
-      navigate("/list");
+      navigate(CHATROOM_LIST_PAGE_PATH);
     }
   };
 
