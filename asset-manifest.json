@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/lovyu/static/css/main.6e63a050.css",
-    "main.js": "/lovyu/static/js/main.15eab952.js",
+    "main.js": "/lovyu/static/js/main.33884763.js",
     "static/media/male.svg": "/lovyu/static/media/male.20a71a7efbbe6e623e770c84f6713b74.svg",
     "static/media/female.svg": "/lovyu/static/media/female.7fd997da583871a69acd5e929c6789f7.svg",
     "index.html": "/lovyu/index.html",
     "main.6e63a050.css.map": "/lovyu/static/css/main.6e63a050.css.map",
-    "main.15eab952.js.map": "/lovyu/static/js/main.15eab952.js.map"
+    "main.33884763.js.map": "/lovyu/static/js/main.33884763.js.map"
   },
   "entrypoints": [
     "static/css/main.6e63a050.css",
-    "static/js/main.15eab952.js"
+    "static/js/main.33884763.js"
   ]
 }
