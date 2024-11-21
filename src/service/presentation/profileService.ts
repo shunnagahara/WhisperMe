@@ -2,7 +2,7 @@ import { User } from "../../constants/types/user";
 import { fetchProfile, saveProfile } from "../../repository/webstorage/user";
 import { errorMessages } from "../../constants/common";
 import { NavigateFunction } from 'react-router-dom';
-
+import { CHATROOM_LIST_PAGE_PATH } from "../../constants/common";
 /**
  * ユーザープロフィールの入力値を検証します。
  *
@@ -98,6 +98,6 @@ import { NavigateFunction } from 'react-router-dom';
   ) => {
     setShowSkipModal(false);
     if (navigateToChat) {
-      navigate('/list'); // Navigate to chat room list if user agrees
+      navigate(CHATROOM_LIST_PAGE_PATH); // Navigate to chat room list if user agrees
     }
   };

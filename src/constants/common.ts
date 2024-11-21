@@ -8,9 +8,13 @@ export const roomNumbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
 export const CONFESSION_MESSAGE       = "愛してます";
 export const CONFESSION_REPLY_MESSAGE = "私も愛してます";
 
-export const ROOM_AVAILABLE_IMAGE_PATH     = '/img/room-available.png'
-export const ROOM_DISABLE_IMAGE_PATH       = '/img/room-disable.png'
-export const ROOM_SOMEBODY_IN_IMAGE_PATH   = '/img/room-somebody-in.png'
+export const ROOM_AVAILABLE_IMAGE_PATH     = '/lovyu/img/room-available.png'
+export const ROOM_DISABLE_IMAGE_PATH       = '/lovyu/img/room-disable.png'
+export const ROOM_SOMEBODY_IN_IMAGE_PATH   = '/lovyu/img/room-somebody-in.png'
+
+export const PROFILE_PAGE_PATH         = '/lovyu/profile'
+export const CHATROOM_LIST_PAGE_PATH   = '/lovyu/list'
+export const CHAT_PAGE_PATH            = '/lovyu/chat'
 
 
 export const FIVE_MINUTES              = 300000

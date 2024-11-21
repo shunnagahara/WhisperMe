@@ -4,6 +4,7 @@ import { subscribeToRooms } from './../service/model/chatRoomListService';
 import { isRoomAvailable, fetchRoomImage } from './../service/presentation/chatRoomListService';
 import { fetchProfile } from '../repository/webstorage/user';
 import { RoomInfo } from './../constants/types/roomInfo';
+import { CHAT_PAGE_PATH } from '../constants/common';
 import Loading from './../components/Loading';
 import './../css/chatRoomList.css';
 
@@ -52,7 +53,7 @@ const ChatRoomList: React.FC = () => {
             }
             image={fetchRoomImage(room.userCount)}
             showHeart={room.userCount === 1}
-            link={isAvailable ? `/chat/${room.id}` : '#'}
+            link={isAvailable ? `${CHAT_PAGE_PATH}/${room.id}` : '#'}
           />
         );
       })}
