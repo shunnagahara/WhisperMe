@@ -19,3 +19,17 @@ repopack-output.txt
 firebase-debug.log
 ui-debug.log
 main.cpython-312.pyc
+build/logo.png
+build/splash.css
+build/icons/female.svg
+build/icons/male.svg
+build/img/room-available.png
+build/img/room-disable.png
+build/img/room-somebody-in.png
+build/static/css/main.6e63a050.css
+build/static/css/main.6e63a050.css.map
+build/static/js/main.33884763.js
+build/static/js/main.33884763.js.LICENSE.txt
+build/static/js/main.33884763.js.map
+build/static/media/female.7fd997da583871a69acd5e929c6789f7.svg
+build/static/media/male.20a71a7efbbe6e623e770c84f6713b74.svg
