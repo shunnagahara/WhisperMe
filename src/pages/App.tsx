@@ -6,10 +6,10 @@ import ChatRoomList from './ChatRoomList';
 const App = () => (
   <div className="App">
     <Routes>
-      <Route path="/chat/:room" element={<ChatPage />} />
-      <Route path="/list" element={<ChatRoomList />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="*" element={<Navigate replace to="/profile" />} />
+      <Route path="/lovyu/chat/:room" element={<ChatPage />} />
+      <Route path="/lovyu/list" element={<ChatRoomList />} />
+      <Route path="/lovyu/profile" element={<Profile />} />
+      <Route path="/lovyu/*" element={<Navigate replace to="/lovyu/profile" />} />
     </Routes>
   </div>
 );
