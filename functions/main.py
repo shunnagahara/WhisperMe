@@ -7,7 +7,7 @@ from flask import jsonify
 db = firestore.Client()
 
 # 定数を定義
-INACTIVITY_THRESHOLD_SECONDS = 300  # 非アクティブとみなす閾値（秒単位）
+INACTIVITY_THRESHOLD_SECONDS = 3600  # 非アクティブとみなす閾値（1時間）
 
 def get_max_chat_rooms():
     """
@@ -37,7 +37,6 @@ def delete_inactive_users(request):
     各チャットルームの 'activeUsers' コレクション内のドキュメントを確認します。
     `lastUpdated` フィールドが非アクティブとみなされる閾値
     （INACTIVITY_THRESHOLD_SECONDS）を超えている場合、そのユーザーを削除します。
-    また、チャットルーム内のアクティブユーザー数が1以下の場合は処理をスキップします。
 
     引数:
         request (flask.Request): HTTPリクエストオブジェクト。通常はFlaskルートハンドラから提供されます。
@@ -58,11 +57,6 @@ def delete_inactive_users(request):
         collection_path = f'chatroom/{number}/activeUsers'
         active_users_ref = db.collection(collection_path)
         docs = list(active_users_ref.stream())  # すべてのドキュメントをリスト化
-
-        # アクティブユーザーの数をチェック
-        if len(docs) <= 1:
-            print(f"チャットルーム {number} をスキップ: アクティブユーザーが不足しています")
-            continue  # 次のチャットルームへ
 
         # 各ドキュメントをチェックして、非アクティブユーザーを削除
         for doc in docs:
