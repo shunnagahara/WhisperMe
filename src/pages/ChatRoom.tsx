@@ -11,7 +11,7 @@ import {
   submitMsg,
   startConfessionModalTimer,
   clearModalTimer,
-  saveEnterTheRoomAnnounceMessage,
+  saveAnnounceMessageForEntering,
 } from '../service/model/chatRoomService';
 import { ChatLog } from './../constants/types/chatLog';
 import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE, TEN_SECONDS } from '../constants/common';
@@ -42,10 +42,10 @@ const ChatRoom: React.FC = () => {
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
-    const activeUser = async () => {await setActiveUser(userRef, user);};
-    activeUser();
-    const saveEnter = async () => {await saveEnterTheRoomAnnounceMessage(messagesRef, room, user.name);};
-    saveEnter();
+    const execActiveUser = async () => {await setActiveUser(userRef, user);};
+    execActiveUser();
+    const execSaveAnnounceMessageForEntering = async () => {await saveAnnounceMessageForEntering(messagesRef, room, user.name);};
+    execSaveAnnounceMessageForEntering();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
