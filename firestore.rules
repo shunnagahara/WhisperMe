@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // チャットルームのベース設定
+    match /chatroom/{roomId} {
+      // チャットルーム自体の読み書きを許可
+      allow read, write;
+      
+      // メッセージコレクションのルール
+      match /messages/{messageId} {
+        allow read: if true;  // メッセージの読み取りは常に許可
+        
+        allow create: if
+          // メッセージの形式を検証
+          request.resource.data.keys().hasAll(['name', 'msg', 'date']) &&
+          request.resource.data.name is string &&
+          request.resource.data.name.size() > 0 &&
+          request.resource.data.name.size() <= 50 &&
+          request.resource.data.msg is string &&
+          request.resource.data.msg.size() > 0 &&
+          request.resource.data.msg.size() <= 1000 &&
+          request.resource.data.date is number;
+      }
+      
+      // アクティブユーザーコレクションのルール
+      match /activeUsers/{userId} {
+        allow read: if true;
+        
+        allow create, update: if
+          // ユーザーデータの形式を検証
+          request.resource.data.keys().hasAll(['name', 'gender', 'ageRange', 'personalities', 'appearance', 'targetGender', 'favoriteAppearance', 'selectedPersonalities', 'favoriteAgeRange', 'lastUpdated']) &&
+          request.resource.data.name is string &&
+          request.resource.data.name.size() > 0 &&
+          request.resource.data.name.size() <= 50 &&
+          request.resource.data.gender in ['male', 'female'] &&
+          request.resource.data.ageRange is string &&
+          request.resource.data.personalities is list &&
+          request.resource.data.appearance is string &&
+          request.resource.data.targetGender in ['male', 'female'] &&
+          request.resource.data.favoriteAppearance is string &&
+          request.resource.data.selectedPersonalities is list &&
+          request.resource.data.favoriteAgeRange is string &&
+          request.resource.data.lastUpdated is timestamp;
+        
+        // ユーザーは自分のデータのみ削除可能
+        allow delete: if
+          request.auth == null ||  // 認証なしでの削除を許可
+          userId == request.resource.data.name;  // または自分のデータの場合
+      }
+    }
+
+    // システム設定用のドキュメント
+    match /config/chatSettings {
+      allow read: if true;  // 設定の読み取りは常に許可
+      allow write: if false;  // 設定の変更は管理者のみ（Cloud Functionsで制御）
+    }
+  }
+}
