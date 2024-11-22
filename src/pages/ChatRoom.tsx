@@ -10,7 +10,7 @@ import {
   fetchChatMessages,
   submitMsg,
   startConfessionModalTimer,
-  clearModalTimer,
+  clearConfessionModalTimer,
   saveAnnounceMessageForEntering,
 } from '../service/model/chatRoomService';
 import { ChatLog } from './../constants/types/chatLog';
@@ -64,7 +64,7 @@ const ChatRoom: React.FC = () => {
   useEffect(() => {
     startConfessionModalTimer(setIsConfessionModalOpen, modalTimer, room);
     return () => {
-      clearModalTimer(modalTimer);
+      clearConfessionModalTimer(modalTimer);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

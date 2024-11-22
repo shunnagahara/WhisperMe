@@ -179,10 +179,10 @@ export const startConfessionModalTimer = (
 };
 
 /**
- * モーダルタイマーをクリア
+ * 告白モーダルタイマーをクリア
  * @param intervalRef タイマーIDを保持するRef
  */
-export const clearModalTimer = (intervalRef: React.MutableRefObject<NodeJS.Timeout | null>) => {
+export const clearConfessionModalTimer = (intervalRef: React.MutableRefObject<NodeJS.Timeout | null>) => {
   if (intervalRef.current) {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
