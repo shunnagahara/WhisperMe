@@ -1,33 +1,26 @@
 
-  #splash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white; /* 背景色を白に */
-    z-index: 1000;
-  }
-  
-  #splash-logo {
-    width: 200px; /* ロゴのサイズを調整してください */
-    animation: fadeInOut 3s ease forwards;
-  }
+#splash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  z-index: 1000;
+}
 
-  #splash-text {
-    font-family: 'Amatic SC', sans-serif;
-    font-size: 80px; /* 適宜サイズを調整 */
-    color: #ff004d;
-    /* font-weight: bold; */
-    animation: fadeInOut 3s ease forwards;
-  }
-  
-  @keyframes fadeInOut {
-    0% { opacity: 0; }
-    50% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-  
+#splash-logo {
+  max-width: 300px; /* ロゴの最大幅を設定 */
+  width: 80%; /* レスポンシブ対応 */
+  height: auto;
+  animation: fadeInOut 3s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
