@@ -11,6 +11,7 @@ import {
   saveAnnounceMessageForEntering,
 } from '../service/model/chatRoomService';
 import { useConfessionModal } from '../hooks/useConfessionModal';
+import { useReplyModal } from '../hooks/useReplyModal';
 import { ChatLog } from './../constants/types/chatLog';
 import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE } from '../constants/common';
 import Modal from './../components/Modal';
@@ -26,12 +27,17 @@ const ChatRoom: React.FC = () => {
   const [inputMsg, setInputMsg]                           = useState('');
   const isInitialMount                                    = useRef(true);
   const hasRun                                            = useRef(false);
-  const [isReplyModalOpen, setIsReplyModalOpen]           = useState(false);
+  // const [isReplyModalOpen, setIsReplyModalOpen]           = useState(false);
   const user        = useMemo(() => fetchProfile(), []);
   const { room }    = useParams<{ room: string }>();
   const roomRef     = collection(db, 'chatroom', room, 'activeUsers');
   const userRef     = doc(roomRef, user.name); 
   const messagesRef = useMemo(() => collection(db, 'chatroom', room, 'messages'),[room]);
+
+  const handleSend = async (inputMessage: string, substituteMessage?:string, announceFlag:boolean  = false) => {
+    const modalOpenFlag = inputMsg !== CONFESSION_MESSAGE;
+    await submitMsg(messagesRef, userRef, user.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage, announceFlag);
+  };
 
   const handleConfessionSend = () => {
     handleSend("", CONFESSION_MESSAGE);
@@ -45,6 +51,14 @@ const ChatRoom: React.FC = () => {
   } = useConfessionModal({ 
     room,
     onConfessionSend: handleConfessionSend
+  });
+
+  const {
+    isReplyModalOpen,
+    setIsReplyModalOpen,
+    handleReplySend
+  } = useReplyModal({
+    onReplySend: handleSend
   });
 
   useEffect(() => {
@@ -77,17 +91,8 @@ const ChatRoom: React.FC = () => {
       isInitialMount
     );
     return () => unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messagesRef, user.name]);
-
-  const handleSend = async (inputMessage: string, substituteMessage?:string, announceFlag:boolean  = false) => {
-    const modalOpenFlag = inputMsg !== CONFESSION_MESSAGE;
-    await submitMsg(messagesRef, userRef, user.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage, announceFlag);
-  };
-
-  const handleReplySend = () => {
-    setIsReplyModalOpen(false);
-    handleSend("", CONFESSION_REPLY_MESSAGE);
-  };
 
   return (
     <>
