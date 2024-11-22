@@ -6,16 +6,13 @@ import { fetchProfile } from './../repository/webstorage/user';
 import { setActiveUser } from '../repository/firestore/activeUser';
 import {
   handleRemoveActiveUser,
-  handleCountdown,
   fetchChatMessages,
   submitMsg,
-  startConfessionModalTimer,
-  clearConfessionModalTimer,
   saveAnnounceMessageForEntering,
 } from '../service/model/chatRoomService';
 import { useConfessionModal } from '../hooks/useConfessionModal';
 import { ChatLog } from './../constants/types/chatLog';
-import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE, TEN_SECONDS } from '../constants/common';
+import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE } from '../constants/common';
 import Modal from './../components/Modal';
 import Balloon from './../components/Balloon';
 import Announcement from './../components/Announcement';
