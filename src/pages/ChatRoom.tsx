@@ -12,18 +12,18 @@ import {
   startConfessionModalTimer,
   clearModalTimer,
   saveEnterTheRoomAnnounceMessage,
-} from '../service/model/chatPageService';
+} from '../service/model/chatRoomService';
 import { ChatLog } from './../constants/types/chatLog';
 import { CONFESSION_MESSAGE, CONFESSION_REPLY_MESSAGE, TEN_SECONDS } from '../constants/common';
 import Modal from './../components/Modal';
 import Balloon from './../components/Balloon';
 import Announcement from './../components/Announcement';
 import ChatInputBox from './../components/ChatInputBox';
-import './../css/chatPage.css';
+import './../css/chatRoom.css';
 import './../css/modal.css';
 
 
-const ChatPage: React.FC = () => {
+const ChatRoom: React.FC = () => {
   const [chatLogs, setChatLogs]                           = useState<ChatLog[]>([]);
   const [inputMsg, setInputMsg]                           = useState('');
   const [countdown, setCountdown]                         = useState(TEN_SECONDS);
@@ -149,4 +149,4 @@ const ChatPage: React.FC = () => {
   );
 };
 
-export default ChatPage;
+export default ChatRoom;
