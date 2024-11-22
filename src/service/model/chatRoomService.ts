@@ -195,7 +195,7 @@ export const clearModalTimer = (intervalRef: React.MutableRefObject<NodeJS.Timeo
  * @param roomId ルームナンバー
  * @param name ユーザー名
  */
-export const saveEnterTheRoomAnnounceMessage = async (
+export const saveAnnounceMessageForEntering = async (
   messagesRef: CollectionReference,
   roomId: string,
   name: string
