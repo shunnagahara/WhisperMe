@@ -3,7 +3,7 @@ node_modules/
 .env.development
 .env.production
 build/*
-repopack-output.txt
+repomix-output.txt
 /functions/node_modules/
 /functions/venv/
 .firebase/
