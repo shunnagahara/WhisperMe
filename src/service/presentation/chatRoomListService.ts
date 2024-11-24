@@ -1,3 +1,4 @@
+import { RoomInfo } from './../../constants/types/roomInfo';
 import { User } from './../../constants/types/user'
 import { ROOM_AVAILABLE_IMAGE_PATH, ROOM_SOMEBODY_IN_IMAGE_PATH, ROOM_DISABLE_IMAGE_PATH } from './../../constants/common'
 
@@ -31,3 +32,13 @@ export const fetchRoomImage = (userCount:number) => {
   if (userCount === 1)  return ROOM_SOMEBODY_IN_IMAGE_PATH
   if (userCount === 2)  return ROOM_DISABLE_IMAGE_PATH
 }
+
+/**
+ * ルーム情報を部屋番号順にソートします。
+ *
+ * @param {RoomInfo[]} rooms - ソートする部屋情報の配列。
+ * @returns {RoomInfo[]} 部屋番号順にソートされた新しい配列。
+ */
+export const sortRoomsByNumber = (rooms: RoomInfo[]): RoomInfo[] => {
+  return [...rooms].sort((a, b) => Number(a.id) - Number(b.id));
+};

@@ -4,6 +4,7 @@ import { User } from './../../constants/types/user';
 import { RoomInfo } from '../../constants/types/roomInfo';
 import { roomNumbers } from './../../constants/common';
 import { fetchActiveUser } from '../../repository/firestore/activeUser';
+import { sortRoomsByNumber } from '../presentation/chatRoomListService';
 
 
 type RoomSubscriptionArgs = {
@@ -46,7 +47,13 @@ export const subscribeToRooms = ({
           matchingRate,
           user,
         };
-        return [...prevRooms.filter((r) => r.id !== roomId), newRoomData];
+
+        const updatedRooms = [
+          ...prevRooms.filter((r) => r.id !== roomId),
+          newRoomData
+        ];
+
+        return sortRoomsByNumber(updatedRooms);
       });
 
       setIsLoading(false);
