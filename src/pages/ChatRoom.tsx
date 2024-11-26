@@ -92,7 +92,7 @@ const ChatRoom: React.FC = () => {
     );
     return () => unsubscribe();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messagesRef, user.name]);
+  }, [messagesRef]);
 
   return (
     <>
