@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import ChatRoomCard from '../components/ChatRoomCard';
 import { subscribeToRooms } from './../service/model/chatRoomListService';
 import { isRoomAvailable, fetchRoomImage } from './../service/presentation/chatRoomListService';
-import { fetchProfile } from '../repository/webstorage/user';
 import { RoomInfo } from './../constants/types/roomInfo';
 import { CHAT_PAGE_PATH } from '../constants/common';
+import { useAppSelector } from '../hooks/redux';
+import { selectProfile } from '../store/slices/profileSlice';
 import Loading from './../components/Loading';
 import './../css/chatRoomList.css';
 
@@ -12,11 +13,11 @@ import './../css/chatRoomList.css';
 const ChatRoomList: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rooms, setRooms]         = useState<RoomInfo[]>([]);
-  const storedUser                = fetchProfile()
+  const profile                   = useAppSelector(selectProfile);
 
   useEffect(() => {
     const unsubscribe = subscribeToRooms({
-      storedUser,
+      profile,
       setRooms,
       setIsLoading,
     });
@@ -33,7 +34,7 @@ const ChatRoomList: React.FC = () => {
       {rooms.map((room) => {
         const isAvailable = isRoomAvailable(
           room.userCount,
-          storedUser,
+          profile,
           room.user?.gender,
           room.user?.targetGender
         );

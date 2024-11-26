@@ -4,8 +4,10 @@ import { ReactComponent as MaleIcon } from './../assets/icons/male.svg';
 import { ReactComponent as FemaleIcon } from './../assets/icons/female.svg';
 import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './../constants/common';
 import { User } from './../constants/types/user';
-import { isUserProfileExists, handleNext, handleSkipModalClose } from './../service/presentation/profileService';
+import { loadProfileData, handleNext, handleSkipModalClose } from './../service/presentation/profileService';
 import { calculateProgress } from './../service/model/profileService';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { updateProfileField, selectProfile } from '../store/slices/profileSlice';
 import Modal from './../components/Modal';
 import ProgressBar from './../components/ProgressBar';
 import './../css/profile.css';
@@ -13,34 +15,20 @@ import './../css/profile.css';
 
 const Profile: React.FC = () => {
 
-  const [profile, setProfile] = useState<User>({
-    name: '',
-    gender: '',
-    ageRange: '',
-    personalities: [],
-    appearance: '',
-    targetGender: '',
-    favoriteAppearance: '',
-    selectedPersonalities: [],
-    favoriteAgeRange: ''
-  });
+  const profile = useAppSelector(selectProfile);
   const [progress, setProgress]   = useState(0);
   const [showSkipModal, setShowSkipModal] = useState(false);
   const [errors, setErrors]       = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const updateProfile = (key: keyof User, value: any) => {
-    setProfile((prevProfile) => ({
-        ...prevProfile,
-        [key]: Array.isArray(prevProfile[key])
-            ? [...(prevProfile[key] as string[]), value]
-            : value,
-    }));
+    dispatch(updateProfileField({ key, value }));
   };
 
   useEffect(() => {
-    if (isUserProfileExists()) setShowSkipModal(true);
-  }, []);
+    loadProfileData(dispatch, setShowSkipModal);
+  }, [dispatch]);
 
   useEffect(() => {
     const progressValue = calculateProgress(profile);

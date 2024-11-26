@@ -3,6 +3,9 @@ import { fetchProfile, saveProfile } from "../../repository/webstorage/user";
 import { errorMessages } from "../../constants/common";
 import { NavigateFunction } from 'react-router-dom';
 import { CHATROOM_LIST_PAGE_PATH } from "../../constants/common";
+import { AppDispatch } from '../../store/store';
+import { loadStoredProfile } from '../../store/slices/profileSlice';
+
 /**
  * ユーザープロフィールの入力値を検証します。
  *
@@ -51,6 +54,22 @@ import { CHATROOM_LIST_PAGE_PATH } from "../../constants/common";
     }
     return false;
   };
+
+/**
+ * ユーザーデータの初期ロード処理
+ */
+export const loadProfileData = (
+  dispatch: AppDispatch,
+  setShowSkipModal: (show: boolean) => void
+) => {
+  const storedUserData = fetchProfile();
+  if (storedUserData) {
+    dispatch(loadStoredProfile(storedUserData));
+    setShowSkipModal(true);
+  }
+  return !!storedUserData;
+};
+
 
 /**
  * 入力値を検証し、次のページへ遷移する処理を実行します。

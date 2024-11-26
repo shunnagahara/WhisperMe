@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, collection } from 'firebase/firestore';
 import { db } from './../firebaseConfig';
-import { fetchProfile } from './../repository/webstorage/user';
 import { setActiveUser } from '../repository/firestore/activeUser';
 import {
   handleRemoveActiveUser,
@@ -10,6 +9,8 @@ import {
   submitMsg,
   saveAnnounceMessageForEntering,
 } from '../service/model/chatRoomService';
+import { useAppSelector } from '../hooks/redux';
+import { selectProfile } from '../store/slices/profileSlice';
 import { useConfessionModal } from '../hooks/useConfessionModal';
 import { useReplyModal } from '../hooks/useReplyModal';
 import { ChatLog } from './../constants/types/chatLog';
@@ -27,16 +28,15 @@ const ChatRoom: React.FC = () => {
   const [inputMsg, setInputMsg]                           = useState('');
   const isInitialMount                                    = useRef(true);
   const hasRun                                            = useRef(false);
-  // const [isReplyModalOpen, setIsReplyModalOpen]           = useState(false);
-  const user        = useMemo(() => fetchProfile(), []);
+  const profile                                           = useAppSelector(selectProfile);
   const { room }    = useParams<{ room: string }>();
   const roomRef     = collection(db, 'chatroom', room, 'activeUsers');
-  const userRef     = doc(roomRef, user.name); 
+  const userRef     = doc(roomRef, profile.name); 
   const messagesRef = useMemo(() => collection(db, 'chatroom', room, 'messages'),[room]);
 
   const handleSend = async (inputMessage: string, substituteMessage?:string, announceFlag:boolean  = false) => {
     const modalOpenFlag = inputMsg !== CONFESSION_MESSAGE;
-    await submitMsg(messagesRef, userRef, user.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage, announceFlag);
+    await submitMsg(messagesRef, userRef, profile.name, modalOpenFlag, () => setInputMsg(""), inputMessage, substituteMessage, announceFlag);
   };
 
   const handleConfessionSend = () => {
@@ -64,9 +64,9 @@ const ChatRoom: React.FC = () => {
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
-    const execActiveUser = async () => {await setActiveUser(userRef, user);};
+    const execActiveUser = async () => {await setActiveUser(userRef, profile);};
     execActiveUser();
-    const execSaveAnnounceMessageForEntering = async () => {await saveAnnounceMessageForEntering(messagesRef, room, user.name);};
+    const execSaveAnnounceMessageForEntering = async () => {await saveAnnounceMessageForEntering(messagesRef, room, profile.name);};
     execSaveAnnounceMessageForEntering();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -87,7 +87,7 @@ const ChatRoom: React.FC = () => {
       messagesRef,
       setChatLogs,
       setIsReplyModalOpen,
-      user.name,
+      profile.name,
       isInitialMount
     );
     return () => unsubscribe();
@@ -104,15 +104,15 @@ const ChatRoom: React.FC = () => {
               key={item.key}
               userName={item.name}
               message={item.msg}
-              isCurrentUser={user.name === item.name}
+              isCurrentUser={profile.name === item.name}
             />
-          ) : user.name !== item.name ?(
+          ) : profile.name !== item.name ?(
             <Announcement key={item.key} message={item.msg} />
           ): null
         )}
         </div>
 
-        <ChatInputBox userName={user.name} onSendMessage={handleSend} />
+        <ChatInputBox userName={profile.name} onSendMessage={handleSend} />
 
         <Modal show={isConfessionModalOpen} handleClose={handleCloseConfessionModal} title="運命の出会い" message="同じ部屋にいる相手は運命の人かもしれません。" subMessage="思いを相手に伝えますか？" countdown={`${countdown}秒後にモーダルは自動的に閉じます。`}>
           <input className="modal-input" type="text" value={CONFESSION_MESSAGE} readOnly />

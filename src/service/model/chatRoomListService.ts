@@ -8,7 +8,7 @@ import { sortRoomsByNumber } from '../presentation/chatRoomListService';
 
 
 type RoomSubscriptionArgs = {
-  storedUser: User;
+  profile: User;
   setRooms: React.Dispatch<React.SetStateAction<RoomInfo[]>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -18,7 +18,7 @@ type RoomSubscriptionArgs = {
  * チャットルームの情報をリアルタイムで更新します。
  *
  * @param {RoomSubscriptionArgs} args - 監視に必要な引数。
- * @param {User} args.storedUser - 現在のユーザー情報。
+ * @param {User} args.profile - 現在のユーザー情報。
  * @param {React.Dispatch<React.SetStateAction<RoomInfo[]>>} args.setRooms - ルーム情報を更新するための関数。
  * @param {React.Dispatch<React.SetStateAction<boolean>>} args.setIsLoading - ローディング状態を更新するための関数。
  *
@@ -26,7 +26,7 @@ type RoomSubscriptionArgs = {
  *
  */
 export const subscribeToRooms = ({
-  storedUser,
+  profile,
   setRooms,
   setIsLoading,
 }: RoomSubscriptionArgs) => {
@@ -39,7 +39,7 @@ export const subscribeToRooms = ({
 
       setRooms((prevRooms) => {
         const userCount = snapshot.size;
-        const matchingRate = userCount === 1 && user ? calculateMatchingRate(user, storedUser) : undefined;
+        const matchingRate = userCount === 1 && user ? calculateMatchingRate(user, profile) : undefined;
 
         const newRoomData = {
           id: roomId,
