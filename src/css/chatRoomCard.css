@@ -15,6 +15,36 @@
   -webkit-backdrop-filter: blur(13px);
   transition: .5s;
   width: 250px;
+  animation: fadeInScale 0.3s ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.5s ease;
+}
+
+/* ユーザー数変更時のアニメーション */
+.card.user-change {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 
@@ -24,6 +54,7 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
+  transition: opacity 0.3s ease;
 }
 
 .card-link {
@@ -68,6 +99,11 @@
   font-size: 1.5rem;
   color: red;
   cursor: pointer; /* ホバーしやすく */
+  transition: transform 0.3s ease;
+}
+
+.card-heart:hover {
+  transform: scale(1.2);
 }
 
 /* 吹き出し */

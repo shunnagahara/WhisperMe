@@ -42,3 +42,24 @@ export const fetchRoomImage = (userCount:number) => {
 export const sortRoomsByNumber = (rooms: RoomInfo[]): RoomInfo[] => {
   return [...rooms].sort((a, b) => Number(a.id) - Number(b.id));
 };
+
+/**
+ * ユーザー数の変更を検知し、アニメーション状態を制御します。
+ * 
+ * @param {number} currentUserCount - 現在のユーザー数
+ * @param {number} prevUserCount - 以前のユーザー数
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setAnimateChange - アニメーション状態を更新する関数
+ * @returns {() => void} クリーンアップ関数
+ */
+export const handleUserCountChange = (
+  currentUserCount: number,
+  prevUserCount: number,
+  setAnimateChange: React.Dispatch<React.SetStateAction<boolean>>
+): (() => void) => {
+  if (prevUserCount !== currentUserCount) {
+    setAnimateChange(true);
+    const timer = setTimeout(() => setAnimateChange(false), 500);
+    return () => clearTimeout(timer);
+  }
+  return () => {};
+};

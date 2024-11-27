@@ -56,6 +56,7 @@ const ChatRoomList: React.FC = () => {
             image={fetchRoomImage(room.userCount)}
             showHeart={room.userCount === 1}
             link={isAvailable ? `${CHAT_PAGE_PATH}/${room.id}` : '#'}
+            userCount={room.userCount}
           />
         );
       })}
