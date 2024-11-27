@@ -40,12 +40,12 @@ const Profile: React.FC = () => {
 
       <Modal
         show={showSkipModal}
-        handleClose={() => handleSkipModalClose(setShowSkipModal, navigate, false)}
+        handleClose={() => handleSkipModalClose(setShowSkipModal, navigate, false, dispatch)}
         title="プロフィールが保存されています"
         message="保存されたプロフィールでチャットルームに移動しますか？"
       >
         <button className="modal-button modal-button-confirm" onClick={() => handleSkipModalClose(setShowSkipModal, navigate, true)}>はい</button>
-        <button className="modal-button modal-button-cancel" onClick={() => handleSkipModalClose(setShowSkipModal, navigate, false)}>いいえ</button>
+        <button className="modal-button modal-button-cancel" onClick={() => handleSkipModalClose(setShowSkipModal, navigate, false, dispatch)}>いいえ</button>
       </Modal>
 
       <ProgressBar progress={progress} />

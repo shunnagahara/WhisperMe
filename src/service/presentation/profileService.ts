@@ -5,6 +5,7 @@ import { NavigateFunction } from 'react-router-dom';
 import { CHATROOM_LIST_PAGE_PATH } from "../../constants/common";
 import { AppDispatch } from '../../store/store';
 import { loadStoredProfile } from '../../store/slices/profileSlice';
+import { resetProfile } from "../../store/slices/profileSlice";
 
 /**
  * ユーザープロフィールの入力値を検証します。
@@ -85,19 +86,19 @@ export const loadProfileData = (
  *    - プロフィールをローカルストレージに保存。
  *    - `/list` ページへ遷移。
  */
-  export const handleNext = (
-    profile: User,
-    setErrors: (errors: { [key: string]: string }) => void,
-    navigate: (path: string) => void
-  ) => {
-    const validationErrors = validateProfileInputs(profile);
-    setErrors(validationErrors);
-  
-    if (Object.keys(validationErrors).length === 0) {
-      saveProfile(profile)
-      navigate(CHATROOM_LIST_PAGE_PATH);
-    }
-  };
+export const handleNext = (
+  profile: User,
+  setErrors: (errors: { [key: string]: string }) => void,
+  navigate: (path: string) => void
+) => {
+  const validationErrors = validateProfileInputs(profile);
+  setErrors(validationErrors);
+
+  if (Object.keys(validationErrors).length === 0) {
+    saveProfile(profile)
+    navigate(CHATROOM_LIST_PAGE_PATH);
+  }
+};
 
 /**
  * スキップモーダルを閉じ、必要に応じてチャットルーム一覧ページに遷移します。
@@ -105,18 +106,28 @@ export const loadProfileData = (
  * @param {(show: boolean) => void} setShowSkipModal - スキップモーダル表示状態を設定する関数。
  * @param {NavigateFunction} navigate - ページ遷移を実行する関数。
  * @param {boolean} navigateToChat - チャットルーム一覧ページに遷移するかどうかを指定するフラグ。
+ * @param {AppDispatch} [dispatch] - Reduxのディスパッチ関数（オプショナル）。
  * 
  * ### 処理内容:
  * 1. モーダルを非表示に設定。
  * 2. `navigateToChat` が `true` の場合、`/list` ページへ遷移。
+ * 3. `navigateToChat` が `false` の場合:
+ *    - プロフィール情報をリセット。
+ *    - ページトップへスクロール。
  */
-  export const handleSkipModalClose = (
-    setShowSkipModal: (show: boolean) => void,
-    navigate: NavigateFunction,
-    navigateToChat: boolean
-  ) => {
-    setShowSkipModal(false);
-    if (navigateToChat) {
-      navigate(CHATROOM_LIST_PAGE_PATH); // Navigate to chat room list if user agrees
+export const handleSkipModalClose = (
+  setShowSkipModal: (show: boolean) => void,
+  navigate: NavigateFunction,
+  navigateToChat: boolean,
+  dispatch?: AppDispatch
+) => {
+  setShowSkipModal(false);
+  if (navigateToChat) {
+    navigate(CHATROOM_LIST_PAGE_PATH);
+  } else {
+    if (dispatch) {
+      dispatch(resetProfile());
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  };
+  }
+};
