@@ -4,7 +4,7 @@ import { ReactComponent as MaleIcon } from './../assets/icons/male.svg';
 import { ReactComponent as FemaleIcon } from './../assets/icons/female.svg';
 import { ageRangeOptions, personalityOptions, maleAppearanceOptions, femaleAppearanceOptions } from './../constants/common';
 import { User } from './../constants/types/user';
-import { loadProfileData, handleNext, handleSkipModalClose } from './../service/presentation/profileService';
+import { loadProfileData, handleNext, handleSkipModalClose, handleInputFocus, handleInputBlur } from './../service/presentation/profileService';
 import { calculateProgress } from './../service/model/profileService';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { updateProfileField, selectProfile } from '../store/slices/profileSlice';
@@ -59,6 +59,8 @@ const Profile: React.FC = () => {
             onChange={(e) => updateProfile("name", e.target.value)}
             placeholder="あなたの名前を入力してください"
             className="profile-input"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
           />
           {errors.name && <p className="error-text">{errors.name}</p>}
         </div>

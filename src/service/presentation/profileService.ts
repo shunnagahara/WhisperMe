@@ -131,3 +131,21 @@ export const handleSkipModalClose = (
     }
   }
 };
+
+/**
+ * 入力フィールドにフォーカスが当たった時の処理を行います。
+ * ビューポートのスケールを縮小し、モバイルでの入力を容易にします。
+ */
+export const handleInputFocus = () => {
+  const viewport = document.querySelector('meta[name=viewport]');
+  viewport?.setAttribute('content', 'width=device-width, initial-scale=0.8, maximum-scale=0.8');
+};
+
+/**
+ * 入力フィールドからフォーカスが外れた時の処理を行います。
+ * ビューポートのスケールを元の大きさに戻します。
+ */
+export const handleInputBlur = () => {
+  const viewport = document.querySelector('meta[name=viewport]');
+  viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0');
+};
